@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-title" content="Missione">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="Missione Agosto 2026 — Negus">
+<link rel="manifest" id="pwa-manifest">
+<link rel="apple-touch-icon" id="apple-icon">
+<title>Missione Agosto — Negus</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#000;--card:rgba(28,28,30,0.97);--card2:rgba(38,38,40,0.95);
+  --sep:rgba(255,255,255,0.08);--sep2:rgba(255,255,255,0.05);
+  --lbl:rgba(255,255,255,0.96);--lbl2:rgba(255,255,255,0.55);--lbl3:rgba(255,255,255,0.26);
+  --r:#FF3B30;--rg:rgba(255,59,48,0.14);--rb:rgba(255,59,48,0.3);
+  --o:#FF9500;--og:rgba(255,149,0,0.13);
+  --g:#30D158;--gg:rgba(48,209,88,0.12);
+  --b:#0A84FF;--bg2:rgba(10,132,255,0.12);
+  --p:#BF5AF2;--pg:rgba(191,90,242,0.12);
+  --y:#FFD60A;--yg:rgba(255,214,10,0.11);
+  --t:#5AC8F5;--tg:rgba(90,200,245,0.11);
+  --rr:16px;--ri:12px;--rp:100px;
+  --f:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;
+  --fm:'SF Mono','Menlo','Courier New',monospace;
+  --sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px);
+}
+html{background:#000;-webkit-text-size-adjust:100%}
+body{font-family:var(--f);background:var(--bg);color:var(--lbl);min-height:100vh;overflow-x:hidden;overscroll-behavior:none;-webkit-font-smoothing:antialiased}
+
+/* ── WELCOME ── */
+#wov{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.96);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(20px)}
+#wov.gone{display:none}
+#wcard{background:var(--card);border-radius:24px;padding:34px 26px;text-align:center;max-width:340px;width:100%;border:.5px solid rgba(255,255,255,0.1);position:relative;overflow:hidden}
+#wcard::before{content:'';position:absolute;top:-80px;right:-80px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(255,59,48,0.16) 0%,transparent 65%);pointer-events:none}
+.wc-ico{font-size:60px;line-height:1;margin-bottom:12px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+.wc-sub{font-size:15px;color:var(--lbl2);font-weight:500;margin-bottom:3px}
+.wc-name{font-size:44px;font-weight:800;letter-spacing:-1px;color:var(--r);line-height:1;margin-bottom:12px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+.wc-date{font-size:13px;color:var(--lbl2);font-weight:500;margin-bottom:8px}
+.wc-streak{font-size:14px;color:var(--o);font-weight:700;margin-bottom:16px;min-height:20px}
+.wc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:22px}
+.wcs{background:rgba(255,255,255,0.05);border-radius:12px;padding:10px 5px;text-align:center}
+.wcs-v{font-size:22px;font-weight:800}
+.wcs-l{font-size:9px;color:var(--lbl2);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:1px}
+.wc-btn{width:100%;background:var(--r);color:#fff;border:none;font-family:var(--f);font-size:16px;font-weight:700;padding:14px;border-radius:14px;cursor:pointer;transition:all .15s}
+.wc-btn:active{opacity:.8;transform:scale(.98)}
+.wc-saving{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(28,28,30,0.97);border:.5px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px);border-radius:var(--rr);padding:22px 30px;text-align:center;z-index:8000;display:none}
+.wc-saving.show{display:block;animation:popIn .3s ease}
+.wcs-ico{font-size:36px;margin-bottom:8px}
+.wcs-txt{font-size:16px;font-weight:700}
+.wcs-sub{font-size:12px;color:var(--lbl2);margin-top:3px}
+@keyframes popIn{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+
+/* ── STATUS BAR ── */
+#sb{position:fixed;top:0;left:0;right:0;height:calc(50px + var(--st));padding-top:var(--st);background:rgba(0,0,0,0.9);backdrop-filter:saturate(180%) blur(28px);-webkit-backdrop-filter:saturate(180%) blur(28px);border-bottom:.5px solid var(--sep);display:flex;align-items:flex-end;padding-bottom:8px;padding-left:14px;padding-right:14px;z-index:200;gap:9px}
+.sb-logo{font-size:14px;font-weight:800;color:var(--r);flex-shrink:0}
+.sb-logo em{color:var(--lbl);font-style:normal}
+.sb-xp{flex:1;min-width:0}
+.sb-xr{display:flex;justify-content:space-between;margin-bottom:4px}
+.sb-lv{font-size:10px;font-weight:600;color:var(--lbl2)}
+.sb-pt{font-size:10px;font-weight:700;color:var(--o)}
+.xpt{height:3px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden}
+.xpf{height:100%;background:linear-gradient(90deg,var(--r),var(--o));border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.sb-str{font-size:12px;font-weight:700;color:var(--o);flex-shrink:0}
+#wpill{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.07);border:.5px solid rgba(255,255,255,0.1);border-radius:var(--rp);padding:3px 8px;cursor:pointer;flex-shrink:0;font-size:10px;font-weight:600;color:var(--lbl2)}
+#wpill:active{opacity:.7}
+.wled{width:6px;height:6px;border-radius:50%;background:var(--lbl3);transition:all .3s;flex-shrink:0}
+.wled.home{background:var(--g);box-shadow:0 0 5px rgba(48,209,88,.6)}
+.wled.chk{background:var(--o);animation:blink .7s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* ── NAV (6) ── */
+#nav{position:fixed;bottom:0;left:0;right:0;padding-bottom:var(--sb);background:rgba(0,0,0,0.9);backdrop-filter:saturate(180%) blur(28px);-webkit-backdrop-filter:saturate(180%) blur(28px);border-top:.5px solid var(--sep);display:flex;z-index:200;padding-top:7px}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--lbl3);cursor:pointer;padding:0 1px 5px;transition:all .18s}
+.ni{font-size:18px;line-height:1;transition:transform .2s}
+.nl{font-size:8px;font-weight:600;white-space:nowrap}
+.nb.active{color:var(--r)}
+.nb.active .ni{transform:scale(1.12)}
+
+/* ── MAIN ── */
+#main{padding-top:calc(50px + var(--st) + 10px);padding-bottom:calc(64px + var(--sb) + 10px);padding-left:16px;padding-right:16px;max-width:430px;margin:0 auto}
+.view{display:none}
+.view.active{display:block;animation:su .25s cubic-bezier(.25,.46,.45,.94)}
+@keyframes su{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── TYPE ── */
+.big{font-size:30px;font-weight:800;letter-spacing:-.5px;margin-bottom:2px}
+.dsub{font-size:13px;color:var(--lbl2);font-weight:500;margin-bottom:14px}
+.sh{font-size:19px;font-weight:700;letter-spacing:-.3px;margin:20px 0 8px;padding-left:2px}
+.shsm{font-size:11px;font-weight:600;color:var(--lbl2);letter-spacing:.4px;text-transform:uppercase;margin:14px 0 6px;padding-left:4px}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:var(--rr);overflow:hidden;margin-bottom:10px}
+.crow{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:.5px solid var(--sep2);transition:background .15s}
+.crow:last-child{border-bottom:none}
+.crow.tap{cursor:pointer}
+.crow.tap:active{background:rgba(255,255,255,0.04)}
+.rico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.rbody{flex:1;min-width:0}
+.rtitle{font-size:15px;font-weight:500}
+.rsub{font-size:12px;color:var(--lbl2);margin-top:1px}
+.rright{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.rxp{font-size:12px;font-weight:700;color:var(--o)}
+.rchk{width:23px;height:23px;border-radius:12px;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s cubic-bezier(.34,1.56,.64,1);font-size:13px}
+.crow.done .rchk{background:var(--g);border-color:var(--g);color:#000;font-weight:800}
+.crow.done .rtitle{color:var(--lbl2)}
+.crow.pena .rchk{background:var(--r);border-color:var(--r);color:#fff}
+.crow.pena .rtitle{color:var(--r)}
+
+/* app badge on mission */
+.miss-app-badge{display:inline-flex;align-items:center;gap:3px;background:var(--bg2);border:.5px solid rgba(10,132,255,0.3);border-radius:var(--rp);padding:3px 9px;font-size:11px;font-weight:600;color:var(--b);cursor:pointer;margin-top:6px;white-space:nowrap;transition:all .15s}
+.miss-app-badge:active{opacity:.7}
+.miss-app-edit{display:inline-flex;align-items:center;gap:2px;background:rgba(255,255,255,0.06);border:.5px solid rgba(255,255,255,0.1);border-radius:var(--rp);padding:3px 8px;font-size:10px;font-weight:600;color:var(--lbl3);cursor:pointer;margin-top:6px;margin-left:5px}
+.miss-app-edit:active{opacity:.7}
+
+/* ── HERO ── */
+.hero{background:var(--card);border-radius:var(--rr);padding:16px;margin-bottom:10px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,59,48,0.12) 0%,transparent 70%);pointer-events:none}
+.hero-n{font-size:58px;font-weight:800;letter-spacing:-2px;line-height:1;color:var(--r)}
+.hero-l{font-size:12px;color:var(--lbl2);font-weight:600;letter-spacing:.4px;margin-top:2px}
+.hero-t{font-size:13px;color:var(--o);font-weight:700;margin-top:4px}
+.hero-g{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}
+.hs{background:rgba(255,255,255,0.05);border-radius:var(--ri);padding:10px;text-align:center}
+.hs-v{font-size:24px;font-weight:800;letter-spacing:-.5px}
+.hs-l{font-size:10px;color:var(--lbl2);font-weight:600;margin-top:1px}
+
+/* ── PHASES ── */
+.phases{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:6px}
+.ph{background:var(--card);border-radius:var(--ri);padding:10px 6px;text-align:center;border:.5px solid rgba(255,255,255,0.06)}
+.ph-n{font-size:9px;font-weight:700;letter-spacing:1px;opacity:.55;text-transform:uppercase}
+.ph-nm{font-size:13px;font-weight:700;margin:2px 0}
+.ph-m{font-size:9px;opacity:.4;font-weight:600}
+.ph.l1{color:#8e8e93}.ph.l2{color:var(--b)}.ph.l3{color:var(--p)}
+
+/* ── NOTE ── */
+.notew{background:var(--card);border-radius:var(--rr);padding:12px 14px;margin-bottom:10px}
+.note-l{font-size:11px;font-weight:600;color:var(--lbl2);letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px}
+textarea.note-ta{width:100%;background:transparent;border:none;outline:none;color:var(--lbl);font-family:var(--f);font-size:15px;line-height:1.5;resize:none;min-height:70px}
+textarea.note-ta::placeholder{color:var(--lbl3)}
+
+/* ── PROGRESS ── */
+.proghero{background:var(--card);border-radius:var(--rr);padding:14px;margin-bottom:10px}
+canvas{display:block;width:100%;border-radius:var(--ri)}
+.winrow{display:flex;gap:7px;margin-top:11px}
+.iosin{flex:1;background:rgba(255,255,255,0.07);border:.5px solid rgba(255,255,255,0.12);border-radius:var(--ri);color:var(--lbl);font-family:var(--f);font-size:16px;padding:9px 12px;outline:none;transition:border-color .2s}
+.iosin:focus{border-color:rgba(255,59,48,.5)}
+.iosin::placeholder{color:var(--lbl3)}
+.iosbtn{background:var(--r);color:#fff;border:none;font-family:var(--f);font-size:14px;font-weight:700;padding:9px 16px;border-radius:var(--ri);cursor:pointer;transition:all .15s;white-space:nowrap}
+.iosbtn:active{opacity:.8;transform:scale(.97)}
+.iosbtn.sec{background:rgba(255,255,255,0.1);color:var(--lbl)}
+.pitem{padding:12px 0;border-bottom:.5px solid var(--sep2)}.pitem:last-child{border-bottom:none}
+.ptop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.plbl{font-size:15px;font-weight:600}.pval{font-size:13px;font-weight:600;color:var(--o)}
+.pbar{height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--r),var(--o));border-radius:3px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.meascard{background:var(--card);border-radius:var(--rr);overflow:hidden}
+.mrow{display:flex;align-items:center;padding:11px 14px;border-bottom:.5px solid var(--sep2)}.mrow:last-child{border-bottom:none}
+.mlbl{flex:1;font-size:15px;font-weight:500}
+.minp{background:transparent;border:none;outline:none;color:var(--o);font-family:var(--f);font-size:15px;font-weight:700;text-align:right;width:62px}
+.munit{font-size:12px;color:var(--lbl3);font-weight:500;margin-left:3px;width:18px}
+.wlrow{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:.5px solid var(--sep2)}.wlrow:last-child{border-bottom:none}
+.wldate{font-size:13px;color:var(--lbl2)}.wlval{font-size:15px;font-weight:700}
+
+/* ── DIET ── */
+.dietshdr{background:var(--card);border-radius:var(--rr);padding:14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.dietday{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.dietsub{font-size:12px;color:var(--lbl2);font-weight:500;margin-top:2px}
+.dietkcal{font-size:24px;font-weight:800;color:var(--o)}
+.macrorow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:8px}
+.mbox{background:var(--card);border-radius:var(--ri);padding:10px;text-align:center}
+.mv{font-size:20px;font-weight:800}.ml{font-size:10px;color:var(--lbl2);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:1px}
+.mealcard{background:var(--card);border-radius:var(--rr);margin-bottom:7px;overflow:hidden}
+.mealhdr{display:flex;align-items:center;gap:9px;padding:12px 14px}
+.mico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.mtw{flex:1}.mt{font-size:15px;font-weight:700}.mk{font-size:11px;color:var(--lbl2);font-weight:500;margin-top:1px}
+.mopenb{display:flex;align-items:center;gap:3px;background:var(--bg2);border:.5px solid rgba(10,132,255,.28);border-radius:var(--rp);padding:5px 10px;font-size:11px;font-weight:700;color:var(--b);cursor:pointer;white-space:nowrap;transition:all .15s}
+.mopenb:active{opacity:.7}
+.mbody{padding:0 14px 12px;font-size:13px;line-height:1.7;color:var(--lbl2);border-top:.5px solid var(--sep2);padding-top:9px}
+.mbody strong{color:var(--lbl)}
+.rulepill{display:inline-flex;align-items:center;gap:3px;background:var(--rg);border:.5px solid var(--rb);border-radius:var(--rp);padding:4px 10px;font-size:12px;font-weight:700;color:var(--r);margin-right:5px;margin-bottom:5px}
+.appgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.atile{background:var(--card);border-radius:var(--rr);padding:14px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;border:.5px solid rgba(255,255,255,0.06);transition:all .15s}
+.atile:active{transform:scale(.97)}
+.atico{font-size:30px}.atnm{font-size:13px;font-weight:700}.atsb{font-size:11px;color:var(--lbl2);text-align:center;line-height:1.3}
+.atbtn{font-size:12px;font-weight:700;color:var(--b);background:var(--bg2);border:.5px solid rgba(10,132,255,.24);border-radius:var(--rp);padding:4px 12px;margin-top:1px}
+
+/* ── GYM ── */
+.gym-day-hdr{background:var(--card);border-radius:var(--rr);padding:16px;margin-bottom:9px;position:relative;overflow:hidden}
+.gym-day-hdr::before{content:'';position:absolute;top:-40px;left:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(10,132,255,0.14) 0%,transparent 70%);pointer-events:none}
+.gym-type{font-size:11px;font-weight:700;color:var(--b);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.gym-dayname{font-size:28px;font-weight:800;letter-spacing:-.5px}
+.gym-prog{display:flex;align-items:center;gap:10px;margin-top:10px}
+.gym-prog-bar{flex:1;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.gym-prog-fill{height:100%;background:linear-gradient(90deg,var(--b),var(--g));border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.gym-prog-lbl{font-size:12px;font-weight:700;color:var(--b);flex-shrink:0}
+.excard{background:var(--card);border-radius:var(--rr);overflow:hidden;margin-bottom:8px}
+.ex-hdr{padding:9px 14px;border-bottom:.5px solid rgba(10,132,255,0.12)}
+.ex-hdr-title{font-size:12px;font-weight:700;color:var(--b);letter-spacing:.3px}
+.ex-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:.5px solid var(--sep2);cursor:pointer;transition:background .15s}
+.ex-row:last-child{border-bottom:none}
+.ex-row:active{background:rgba(255,255,255,0.04)}
+.ex-chk{width:22px;height:22px;border-radius:11px;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s cubic-bezier(.34,1.56,.64,1);font-size:13px}
+.ex-row.done .ex-chk{background:var(--g);border-color:var(--g);color:#000;font-weight:800}
+.ex-body{flex:1;min-width:0}
+.ex-name{font-size:14px;font-weight:600}
+.ex-row.done .ex-name{color:var(--lbl2);text-decoration:line-through}
+.ex-sets{font-size:11px;color:var(--lbl3);margin-top:1px}
+.ex-ico{font-size:16px;flex-shrink:0}
+.gym-rest-card{background:var(--card);border-radius:var(--rr);padding:20px;text-align:center;margin-bottom:8px}
+.gym-rest-ico{font-size:48px;margin-bottom:8px}
+.gym-rest-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.gym-rest-sub{font-size:13px;color:var(--lbl2)}
+.gym-app-row{background:var(--card);border-radius:var(--rr);padding:13px;display:flex;align-items:center;gap:11px;margin-bottom:7px;cursor:pointer;border:.5px solid rgba(255,255,255,0.06);transition:all .15s}
+.gym-app-row:active{transform:scale(.98)}
+.gym-app-ico{font-size:32px;width:48px;height:48px;background:rgba(255,255,255,0.06);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gym-app-body{flex:1}
+.gym-app-name{font-size:15px;font-weight:700}
+.gym-app-sub{font-size:11px;color:var(--lbl2);margin-top:2px}
+.gym-app-btn{font-size:12px;font-weight:700;color:var(--b);background:var(--bg2);border:.5px solid rgba(10,132,255,.25);border-radius:var(--rp);padding:5px 12px;flex-shrink:0}
+
+/* ── DIARY ── */
+.diary-empty{background:var(--card);border-radius:var(--rr);padding:36px;text-align:center;color:var(--lbl3)}
+.diary-empty-ico{font-size:44px;margin-bottom:10px}
+.diary-empty-txt{font-size:15px;font-weight:600;margin-bottom:4px;color:var(--lbl2)}
+.diary-empty-sub{font-size:13px}
+.diary-entry{background:var(--card);border-radius:var(--rr);overflow:hidden;margin-bottom:8px;cursor:pointer;border:.5px solid rgba(255,255,255,0.06);transition:all .15s}
+.diary-entry:active{transform:scale(.99)}
+.diary-entry-hdr{padding:13px 14px;display:flex;align-items:center;gap:10px}
+.de-dot{width:10px;height:10px;border-radius:5px;flex-shrink:0}
+.de-left{flex:1;min-width:0}
+.de-date{font-size:15px;font-weight:700}
+.de-day{font-size:11px;color:var(--lbl2);font-weight:500;margin-top:1px}
+.de-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.de-xp{font-size:11px;font-weight:700;color:var(--o)}
+.de-streak{font-size:11px;font-weight:700;color:var(--o)}
+.de-chev{color:var(--lbl3);font-size:15px;transition:transform .22s}
+.de-chev.op{transform:rotate(90deg)}
+.diary-entry-body{display:none;border-top:.5px solid var(--sep2);padding:12px 14px}
+.diary-entry-body.op{display:block}
+.de-note{font-size:14px;line-height:1.6;color:var(--lbl2);margin-bottom:10px;white-space:pre-wrap;word-break:break-word}
+.de-no-note{font-size:13px;color:var(--lbl3);font-style:italic;margin-bottom:10px}
+.de-miss-row{display:flex;flex-wrap:wrap;gap:5px}
+.de-miss-chip{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:var(--rp);font-size:11px;font-weight:600}
+.de-miss-chip.done{background:var(--gg);color:var(--g)}
+.de-miss-chip.miss{background:rgba(255,255,255,0.05);color:var(--lbl3)}
+.de-miss-chip.pen{background:var(--rg);color:var(--r)}
+.diary-week-card{background:var(--card);border-radius:var(--rr);padding:14px;margin-bottom:10px}
+.dwc-title{font-size:12px;font-weight:700;color:var(--b);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+.dwc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.dwc-stat{background:rgba(255,255,255,0.05);border-radius:10px;padding:9px;text-align:center}
+.dwc-v{font-size:18px;font-weight:800}
+.dwc-l{font-size:9px;color:var(--lbl2);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:1px}
+.diary-dots{display:flex;justify-content:space-between;margin-bottom:12px;padding:0 4px}
+.ddot{display:flex;flex-direction:column;align-items:center;gap:4px}
+.ddot-c{width:26px;height:26px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s}
+.ddot-c.active{background:var(--gg)}
+.ddot-c.miss{background:rgba(255,255,255,0.05);opacity:.4}
+.ddot-l{font-size:9px;color:var(--lbl2);font-weight:600}
+
+/* ── APP PICKER MODAL ── */
+#app-picker{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.7);display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)}
+#app-picker.show{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.ap-sheet{background:rgba(28,28,30,0.98);border-radius:24px 24px 0 0;padding:0 0 calc(20px + var(--sb));width:100%;max-width:430px;border:.5px solid rgba(255,255,255,0.1);max-height:80vh;overflow-y:auto}
+.ap-drag{width:36px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:10px auto 4px}
+.ap-title{font-size:18px;font-weight:700;padding:10px 18px 14px;border-bottom:.5px solid var(--sep2)}
+.ap-title span{font-size:13px;color:var(--lbl2);font-weight:500;display:block;margin-top:2px}
+.ap-option{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:.5px solid var(--sep2);cursor:pointer;transition:background .15s}
+.ap-option:last-child{border-bottom:none}
+.ap-option:active{background:rgba(255,255,255,0.04)}
+.ap-opt-ico{font-size:22px;width:36px;text-align:center;flex-shrink:0}
+.ap-opt-body{flex:1}
+.ap-opt-name{font-size:16px;font-weight:600}
+.ap-opt-sub{font-size:12px;color:var(--lbl2);margin-top:1px}
+.ap-opt-sel{width:22px;height:22px;border-radius:11px;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;transition:all .15s}
+.ap-opt-sel.active{background:var(--b);border-color:var(--b);color:#fff}
+.ap-cancel{width:calc(100% - 32px);margin:12px 16px 0;background:rgba(255,255,255,0.1);color:var(--lbl);border:none;font-family:var(--f);font-size:16px;font-weight:600;padding:14px;border-radius:var(--ri);cursor:pointer}
+
+/* ── SYNC ── */
+.setcard{background:var(--card);border-radius:var(--rr);overflow:hidden;margin-bottom:8px}
+.setrow{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:.5px solid var(--sep2)}.setrow:last-child{border-bottom:none}
+.setico{font-size:19px;width:25px;text-align:center;flex-shrink:0}
+.setbody{flex:1}.settit{font-size:15px;font-weight:500}.setsub{font-size:11px;color:var(--lbl2);margin-top:1px}
+.setin{background:rgba(255,255,255,0.07);border:.5px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--lbl);font-family:var(--f);font-size:13px;padding:7px 10px;outline:none;width:130px;transition:border-color .2s}.setin:focus{border-color:rgba(255,59,48,.5)}.setin::placeholder{color:var(--lbl3)}
+.setval{font-size:17px;font-weight:800;color:var(--o)}
+.syncbox{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:var(--rr);padding:14px;margin-bottom:8px}
+.syncdot{width:11px;height:11px;border-radius:6px;flex-shrink:0;transition:all .3s}
+.syncdot.home{background:var(--g);box-shadow:0 0 8px rgba(48,209,88,.5)}
+.syncdot.chk{background:var(--o);animation:blink .7s ease infinite}
+.syncdot.away{background:rgba(255,255,255,0.16)}
+.syncmsg{font-size:14px;font-weight:600;flex:1}.syncsub{font-size:11px;color:var(--lbl2);margin-top:2px}
+.btnrow{display:flex;gap:7px;flex-wrap:wrap}
+
+/* ── APP LINK MANAGER ── */
+.app-link-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:.5px solid var(--sep2)}
+.app-link-row:last-child{border-bottom:none}
+.al-ico{font-size:20px;width:28px;text-align:center;flex-shrink:0}
+.al-body{flex:1}
+.al-miss{font-size:14px;font-weight:600}
+.al-app{font-size:11px;color:var(--b);font-weight:600;margin-top:1px}
+.al-btn{font-size:12px;font-weight:600;color:var(--lbl2);background:rgba(255,255,255,0.07);border:.5px solid rgba(255,255,255,0.1);border-radius:var(--rp);padding:5px 11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.al-btn:active{opacity:.7}
+
+/* ── SCHEDULE ── */
+.daycard{background:var(--card);border-radius:var(--rr);margin-bottom:8px;overflow:hidden}
+.dayhdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;transition:background .15s;border-bottom:.5px solid transparent}
+.dayhdr.op{border-bottom-color:var(--sep2)}
+.dayhdr:active{background:rgba(255,255,255,0.04)}
+.dhl{display:flex;align-items:center;gap:8px}
+.dpip{width:7px;height:7px;border-radius:4px;background:var(--o);flex-shrink:0}
+.dname{font-size:16px;font-weight:700;letter-spacing:-.2px}
+.dtag{font-size:11px;color:var(--lbl2);font-weight:500}
+.dchev{color:var(--lbl3);font-size:15px;transition:transform .22s}
+.dchev.op{transform:rotate(90deg)}
+.dbody{display:none}.dbody.op{display:block}
+.srow{display:flex;gap:10px;padding:8px 14px;border-bottom:.5px solid var(--sep2);align-items:flex-start}
+.srow:last-child{border-bottom:none}
+.st{font-size:10px;color:var(--lbl2);font-family:var(--fm);width:66px;flex-shrink:0;padding-top:1px}
+.sa{font-size:14px;font-weight:500;flex:1;line-height:1.35}
+.srow.tboxe .sa{color:var(--r);font-weight:700}
+.srow.tinglese .sa{color:var(--o)}
+.srow.tfood .sa{color:var(--g)}
+.srow.tsleep .sa{color:var(--p)}
+
+/* ── SECTION DIVIDER (Peso+Dieta) ── */
+.view-divider{height:1px;background:var(--sep);margin:24px 0 20px}
+.view-seg-title{font-size:24px;font-weight:800;letter-spacing:-.4px;margin-bottom:2px}
+.view-seg-sub{font-size:13px;color:var(--lbl2);font-weight:500;margin-bottom:12px}
+
+/* ── ACCESS LOG ── */
+.access-card{background:var(--card);border-radius:var(--rr);overflow:hidden;margin-bottom:10px}
+.access-hdr{padding:12px 14px;border-bottom:.5px solid var(--sep2);display:flex;justify-content:space-between;align-items:center}
+.access-title{font-size:15px;font-weight:700}
+.access-count{font-size:12px;font-weight:700;color:var(--b);background:var(--bg2);padding:3px 9px;border-radius:var(--rp)}
+.access-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:.5px solid var(--sep2)}
+.access-row:last-child{border-bottom:none}
+.arow-left{display:flex;align-items:center;gap:9px}
+.arow-dot{width:8px;height:8px;border-radius:4px;flex-shrink:0}
+.arow-info{display:flex;flex-direction:column;gap:1px}
+.arow-day{font-size:14px;font-weight:600}
+.arow-time{font-size:11px;color:var(--lbl2)}
+.arow-visits{display:flex;align-items:center;gap:4px}
+.arow-v{font-size:13px;font-weight:700}
+.arow-badge{font-size:10px;font-weight:700;color:var(--b);background:var(--bg2);padding:2px 7px;border-radius:var(--rp)}
+
+/* ── INSTALL BANNER ── */
+#install-banner{position:fixed;bottom:calc(68px + var(--sb) + 10px);left:50%;transform:translateX(-50%) translateY(120px);width:calc(100% - 32px);max-width:398px;background:rgba(28,28,30,0.98);border:.5px solid rgba(255,255,255,0.12);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-radius:20px;padding:16px;z-index:8000;transition:transform .38s cubic-bezier(.34,1.2,.64,1),opacity .3s;opacity:0;pointer-events:none}
+#install-banner.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:all}
+.ib-row{display:flex;align-items:center;gap:12px}
+.ib-ico{width:52px;height:52px;border-radius:13px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;background:linear-gradient(135deg,#FF3B30,#FF9500)}
+.ib-body{flex:1;min-width:0}
+.ib-title{font-size:15px;font-weight:700;margin-bottom:2px}
+.ib-sub{font-size:12px;color:var(--lbl2);line-height:1.4}
+.ib-close{width:28px;height:28px;border-radius:14px;background:rgba(255,255,255,0.1);border:none;color:var(--lbl2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ib-close:active{opacity:.7}
+.ib-btns{display:flex;gap:8px;margin-top:12px}
+.ib-btn-install{flex:1;background:var(--r);color:#fff;border:none;font-family:var(--f);font-size:14px;font-weight:700;padding:11px;border-radius:12px;cursor:pointer;transition:all .15s}
+.ib-btn-install:active{opacity:.8;transform:scale(.98)}
+.ib-btn-later{flex:1;background:rgba(255,255,255,0.08);color:var(--lbl2);border:none;font-family:var(--f);font-size:14px;font-weight:600;padding:11px;border-radius:12px;cursor:pointer}
+.ib-btn-later:active{opacity:.7}
+/* ios/android sheets use inline style + JS classList */
+.ios-inner{background:rgba(28,28,30,0.98);border-radius:24px 24px 0 0;padding:0 0 calc(24px + var(--sb));width:100%;max-width:430px;border:.5px solid rgba(255,255,255,0.1)}
+.ios-drag{width:36px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:12px auto 6px}
+.ios-title{font-size:20px;font-weight:800;padding:8px 20px 4px;letter-spacing:-.3px}
+.ios-sub{font-size:13px;color:var(--lbl2);padding:0 20px 16px;line-height:1.5;border-bottom:.5px solid var(--sep2)}
+.ios-step{display:flex;align-items:flex-start;gap:14px;padding:14px 20px;border-bottom:.5px solid var(--sep2)}
+.ios-step:last-of-type{border-bottom:none}
+.ios-step-n{width:28px;height:28px;border-radius:14px;background:var(--r);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ios-step-body{flex:1}
+.ios-step-title{font-size:15px;font-weight:700;margin-bottom:2px}
+.ios-step-sub{font-size:13px;color:var(--lbl2);line-height:1.4}
+.ios-step-ico{font-size:20px;flex-shrink:0}
+.ios-close{width:calc(100% - 32px);margin:12px 16px 0;background:rgba(255,255,255,0.1);color:var(--lbl);border:none;font-family:var(--f);font-size:16px;font-weight:600;padding:14px;border-radius:var(--ri);cursor:pointer}
+
+
+/* ── GUIDE SHEETS ── */
+#android-sheet.show,#ios-sheet.show{display:flex !important;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+/* ── TOAST ── */
+#toast{position:fixed;bottom:calc(68px + var(--sb) + 8px);left:50%;transform:translateX(-50%) translateY(8px);background:rgba(28,28,30,0.97);border:.5px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px);color:var(--lbl);font-size:13px;font-weight:600;padding:10px 20px;border-radius:var(--rp);opacity:0;transition:all .22s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap;z-index:9000;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- WELCOME -->
+<div id="wov">
+  <div id="wcard">
+    <div class="wc-ico">💪</div>
+    <div class="wc-sub">Bentornato,</div>
+    <div class="wc-name">Negus</div>
+    <div class="wc-date" id="wc-date"></div>
+    <div class="wc-streak" id="wc-streak"></div>
+    <div class="wc-stats" id="wc-stats"></div>
+    <button class="wc-btn" onclick="closeWelcome()">INIZIA LA MISSIONE 🔥</button>
+  </div>
+</div>
+
+<!-- SAVING OVERLAY -->
+<div class="wc-saving" id="saving-ov">
+  <div class="wcs-ico">💾</div>
+  <div class="wcs-txt">Salvataggio in corso…</div>
+  <div class="wcs-sub">Backup automatico di fine giornata</div>
+</div>
+
+
+<!-- INSTALL BANNER -->
+<div id="install-banner">
+  <div class="ib-row">
+    <div class="ib-ico">💪</div>
+    <div class="ib-body">
+      <div class="ib-title">Aggiungi alla schermata Home</div>
+      <div class="ib-sub">Apri Missione come un'app, sempre a portata di tap</div>
+    </div>
+    <button class="ib-close" onclick="dismissInstall()">✕</button>
+  </div>
+  <div class="ib-btns">
+    <button class="ib-btn-install" onclick="triggerInstall()">📲 Come installare</button>
+    <button class="ib-btn-later" onclick="dismissInstall()">Dopo</button>
+  </div>
+</div>
+
+<!-- ANDROID GUIDE SHEET -->
+<div id="android-sheet" onclick="closeAndroidSheet(event)" style="position:fixed;inset:0;z-index:8500;background:rgba(0,0,0,0.75);display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)">
+  <div class="ios-inner" style="padding-bottom:calc(28px + var(--sb))">
+    <div class="ios-drag"></div>
+    <div class="ios-title">Installa su Android 📲</div>
+    <div class="ios-sub">Apri questo file in <strong style="color:var(--lbl)">Chrome</strong> e segui i passi qui sotto</div>
+
+    <div class="ios-step">
+      <div class="ios-step-n">1</div>
+      <div class="ios-step-body">
+        <div class="ios-step-title">Apri il menu di Chrome</div>
+        <div class="ios-step-sub">Tocca i <strong style="color:var(--lbl)">3 puntini ⋮</strong> in alto a destra nella barra di Chrome</div>
+      </div>
+      <div class="ios-step-ico">⋮</div>
+    </div>
+
+    <div class="ios-step">
+      <div class="ios-step-n">2</div>
+      <div class="ios-step-body">
+        <div class="ios-step-title">Tocca "Aggiungi a schermata Home"</div>
+        <div class="ios-step-sub">Scorri il menu verso il basso finché vedi <strong style="color:var(--lbl)">"Aggiungi a schermata Home"</strong> oppure <strong style="color:var(--lbl)">"Installa app"</strong></div>
+      </div>
+      <div class="ios-step-ico">🏠</div>
+    </div>
+
+    <div class="ios-step">
+      <div class="ios-step-n">3</div>
+      <div class="ios-step-body">
+        <div class="ios-step-title">Conferma con "Aggiungi"</div>
+        <div class="ios-step-sub">Apparirà un popup — tocca <strong style="color:var(--lbl)">"Aggiungi"</strong> per mettere l'icona sulla Home</div>
+      </div>
+      <div class="ios-step-ico">✅</div>
+    </div>
+
+    <div class="ios-step" style="background:rgba(255,149,0,0.07);border-radius:var(--ri);margin:0 14px;padding:12px 14px;border:.5px solid rgba(255,149,0,0.2)">
+      <div class="ios-step-ico" style="font-size:18px">💡</div>
+      <div class="ios-step-body">
+        <div class="ios-step-title" style="color:var(--o)">Non vedi l'opzione?</div>
+        <div class="ios-step-sub">Assicurati di usare <strong style="color:var(--lbl)">Chrome</strong> (non browser stock Samsung o altri). Cerca "Chrome" sul Play Store se non ce l'hai.</div>
+      </div>
+    </div>
+
+    <button class="ios-close" onclick="document.getElementById('android-sheet').classList.remove('show')">Chiudi</button>
+  </div>
+</div>
+
+<!-- iOS GUIDE SHEET -->
+<div id="ios-sheet" onclick="closeIosSheet(event)" style="position:fixed;inset:0;z-index:8500;background:rgba(0,0,0,0.75);display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)">
+  <div class="ios-inner" style="padding-bottom:calc(28px + var(--sb))">
+    <div class="ios-drag"></div>
+    <div class="ios-title">Installa su iPhone 📲</div>
+    <div class="ios-sub">Assicurati di aprire questa pagina in <strong style="color:var(--lbl)">Safari</strong></div>
+
+    <div class="ios-step">
+      <div class="ios-step-n">1</div>
+      <div class="ios-step-body">
+        <div class="ios-step-title">Tocca il pulsante Condividi</div>
+        <div class="ios-step-sub">In fondo alla barra di Safari, tocca l'icona <strong style="color:var(--lbl)">quadrato con freccia su ⬆️</strong></div>
+      </div>
+      <div class="ios-step-ico">⬆️</div>
+    </div>
+
+    <div class="ios-step">
+      <div class="ios-step-n">2</div>
+      <div class="ios-step-body">
+        <div class="ios-step-title">Tocca "Aggiungi a Home"</div>
+        <div class="ios-step-sub">Scorri nel menù di condivisione e tocca <strong style="color:var(--lbl)">"Aggiungi a schermata Home"</strong></div>
+      </div>
+      <div class="ios-step-ico">➕</div>
+    </div>
+
+    <div class="ios-step">
+      <div class="ios-step-n">3</div>
+      <div class="ios-step-body">
+        <div class="ios-step-title">Tocca "Aggiungi" in alto a destra</div>
+        <div class="ios-step-sub">Puoi rinominare l'app se vuoi, poi tocca <strong style="color:var(--lbl)">"Aggiungi"</strong></div>
+      </div>
+      <div class="ios-step-ico">✅</div>
+    </div>
+
+    <button class="ios-close" onclick="document.getElementById('ios-sheet').classList.remove('show')">Chiudi</button>
+  </div>
+</div>
+
+<!-- APP PICKER -->
+<div id="app-picker" onclick="closeAppPicker(event)">
+  <div class="ap-sheet" id="ap-sheet">
+    <div class="ap-drag"></div>
+    <div class="ap-title">Collega un'app<span id="ap-miss-lbl">Scegli quale app aprire per questa missione</span></div>
+    <div id="ap-options"></div>
+    <button class="ap-cancel" onclick="closeAppPicker()">Annulla</button>
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div id="sb">
+  <div class="sb-logo">M<em>issione</em></div>
+  <div class="sb-xp">
+    <div class="sb-xr"><span class="sb-lv" id="sb-lv">LV1 RECLUTA</span><span class="sb-pt" id="sb-pt">0 XP</span></div>
+    <div class="xpt"><div class="xpf" id="xpf" style="width:0%"></div></div>
+  </div>
+  <div class="sb-str" id="sb-str">🔥 0</div>
+  <div id="wpill" onclick="doWifi()"><div class="wled" id="wled"></div><span id="wtxt">WiFi</span></div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- OGGI -->
+  <div class="view active" id="v-oggi">
+    <div id="oggi-top-banner"></div>
+    <div class="hero">
+      <div class="hero-n" id="h-xp">0</div>
+      <div class="hero-l">XP OGGI</div>
+      <div class="hero-t" id="h-tot">Totale: 0 XP</div>
+      <div class="hero-g">
+        <div class="hs"><div class="hs-v" style="color:var(--o)" id="h-str">0</div><div class="hs-l">🔥 Streak</div></div>
+        <div class="hs"><div class="hs-v" id="h-ms">0/6</div><div class="hs-l">✅ Missioni</div></div>
+      </div>
+    </div>
+    <div class="sh">Missioni</div>
+    <div class="card" id="miss-list"></div>
+    <div class="sh">Penalità</div>
+    <div class="card" id="pen-list"></div>
+    <div class="sh">Note del giorno</div>
+    <div class="notew">
+      <div class="note-l">Diario di oggi</div>
+      <textarea class="note-ta" id="dnote" placeholder="Come stai oggi, Negus? Progressi, sensazioni, alimentazione…" oninput="saveNote()"></textarea>
+    </div>
+    <div class="sh">Fasi</div>
+    <div class="phases">
+      <div class="ph l1"><div class="ph-n">LV 1</div><div class="ph-nm">Fondamenta</div><div class="ph-m">MAGGIO</div></div>
+      <div class="ph l2"><div class="ph-n">LV 2</div><div class="ph-nm">Massa</div><div class="ph-m">GIUGNO</div></div>
+      <div class="ph l3"><div class="ph-n">LV 3</div><div class="ph-nm">Estetico</div><div class="ph-m">LUG–AGO</div></div>
+    </div>
+  </div>
+
+  <!-- ORARIO -->
+  <div class="view" id="v-sched">
+    <div class="big">Orario</div>
+    <div class="dsub" id="sched-date"></div>
+    <div id="sched-con"></div>
+  </div>
+
+  <!-- PESO + DIETA (unificata) -->
+  <div class="view" id="v-pesodieta">
+
+    <!-- ─ SEZIONE PESO ─ -->
+    <div class="view-seg-title">⚖️ Peso</div>
+    <div class="view-seg-sub">Missione Agosto 2026</div>
+    <div class="proghero">
+      <canvas id="wChart" height="150"></canvas>
+      <div class="winrow">
+        <input class="iosin" type="number" id="winp" placeholder="es. 65.0 kg" step="0.1" min="30" max="200">
+        <button class="iosbtn" onclick="logW()">Log</button>
+      </div>
+    </div>
+    <div class="card" style="padding:0 14px">
+      <div class="pitem"><div class="ptop"><span class="plbl">⚖️ Peso</span><span class="pval" id="pw-txt">65→80kg</span></div><div class="pbar"><div class="pfill" id="pw-b" style="width:0%"></div></div></div>
+      <div class="pitem"><div class="ptop"><span class="plbl">📅 Tempo</span><span class="pval" id="pt-txt">0/78 gg</span></div><div class="pbar"><div class="pfill" id="pt-b" style="width:0%"></div></div></div>
+      <div class="pitem"><div class="ptop"><span class="plbl">⚡ XP</span><span class="pval" id="px-txt">0/5000</span></div><div class="pbar"><div class="pfill" id="px-b" style="width:0%"></div></div></div>
+    </div>
+    <div class="shsm">Misurazioni corpo</div>
+    <div class="meascard" id="measg"></div>
+    <button class="iosbtn" style="width:100%;margin-top:9px" onclick="saveMeas()">Salva misure</button>
+    <div class="shsm">Storico peso</div>
+    <div class="card" id="wlog"></div>
+
+    <!-- ─ DIVIDER ─ -->
+    <div class="view-divider"></div>
+
+    <!-- ─ SEZIONE DIETA ─ -->
+    <div class="view-seg-title">🍖 Dieta</div>
+    <div id="diet-hdr"></div>
+    <div class="macrorow" id="diet-mac"></div>
+    <div class="shsm">⚠️ Regole fisse</div>
+    <div style="margin-bottom:10px"><span class="rulepill">❌ No latte</span><span class="rulepill">❌ No pesce</span></div>
+    <div class="sh">Pasti di oggi</div>
+    <div id="meal-list"></div>
+    <div class="sh">Apri app</div>
+    <div class="appgrid" id="diet-apps"></div>
+
+  </div>
+
+  <!-- GYM -->
+  <div class="view" id="v-gym">
+    <div class="big">Allenamento</div>
+    <div class="dsub" id="gym-dsub">Routine VFI + Piano Agosto</div>
+    <div id="gym-day-hdr-con"></div>
+    <div id="gym-exercise-list"></div>
+    <div class="sh">App</div>
+    <div class="gym-app-row" onclick="openApp('strong')"><div class="gym-app-ico">🏋️</div><div class="gym-app-body"><div class="gym-app-name">Strong — Workout Tracker</div><div class="gym-app-sub">Registra serie, pesi e progressione</div></div><div class="gym-app-btn">Apri →</div></div>
+    <div class="gym-app-row" onclick="openApp('hevy')"><div class="gym-app-ico">🔥</div><div class="gym-app-body"><div class="gym-app-name">Hevy — Log Allenamento</div><div class="gym-app-sub">Alternativa rapida a Strong</div></div><div class="gym-app-btn">Apri →</div></div>
+    <div class="gym-app-row" onclick="openApp('abs30')"><div class="gym-app-ico">💪</div><div class="gym-app-body"><div class="gym-app-name">Addominali Scolpiti 30 Giorni</div><div class="gym-app-sub">Play Store — Leap Fitness Group</div></div><div class="gym-app-btn">Apri →</div></div>
+  </div>
+
+  <!-- DIARIO -->
+  <div class="view" id="v-diary">
+    <div class="big">Diario</div>
+    <div class="dsub" id="diary-dsub">Storico completo</div>
+    <div id="diary-week-summary"></div>
+    <div class="sh">Ultime settimane</div>
+    <div id="diary-entries"></div>
+  </div>
+
+  <!-- SYNC -->
+  <div class="view" id="v-sync">
+    <div class="big">Sync</div>
+    <div class="dsub">Backup & Impostazioni</div>
+
+    <div class="syncbox" id="syncbox">
+      <div class="syncdot away" id="sync-dot"></div>
+      <div><div class="syncmsg" id="sync-msg">Premi "Testa rete"</div><div class="syncsub" id="sync-sub">Rileva se sei sulla rete di casa</div></div>
+    </div>
+
+    <div class="setcard">
+      <div class="setrow"><div class="setico">🌐</div><div class="setbody"><div class="settit">IP Router casa</div><div class="setsub">Default: 192.168.1.1</div></div><input type="text" class="setin" id="ip-inp" placeholder="192.168.1.1"></div>
+      <div class="setrow"><div style="flex:1"></div><div class="btnrow"><button class="iosbtn" onclick="saveIP()">Salva</button><button class="iosbtn sec" onclick="doWifi()">Testa rete</button></div></div>
+    </div>
+
+    <div class="sh">App Collegate alle Missioni</div>
+    <div class="setcard" id="app-link-list"></div>
+
+    <div class="sh">Backup</div>
+    <div class="setcard">
+      <div class="setrow"><div class="setico">📋</div><div class="setbody"><div class="settit">Dati locali browser</div><div class="setsub">Esporta JSON per trasferire su altro device</div></div></div>
+      <div class="setrow"><div style="flex:1"></div><div class="btnrow"><button class="iosbtn" onclick="doExport()">📤 Esporta</button><button class="iosbtn sec" onclick="document.getElementById('impf').click()">📥 Importa</button></div></div>
+      <input type="file" id="impf" accept=".json" style="display:none" onchange="doImport(event)">
+      <div class="setrow"><div class="setico">🕐</div><div class="setbody"><div class="settit">Ultimo export</div></div><span id="le-lbl" class="setval" style="font-size:13px;color:var(--lbl2)">—</span></div>
+    </div>
+
+    <div class="sh">Statistiche</div>
+    <div class="setcard">
+      <div class="setrow"><div class="setico">⚡</div><div class="setbody"><div class="settit">XP Totali</div></div><span class="setval" id="cfg-xp">0</span></div>
+      <div class="setrow"><div class="setico">🔥</div><div class="setbody"><div class="settit">Streak giorni</div></div><span class="setval" id="cfg-str">0</span></div>
+      <div class="setrow"><div class="setico">📱</div><div class="setbody"><div class="settit">Accessi totali</div></div><span class="setval" id="cfg-acc">0</span></div>
+      <div class="setrow"><div class="setico">📖</div><div class="setbody"><div class="settit">Giorni nel diario</div></div><span class="setval" id="cfg-diary">0</span></div>
+    </div>
+
+    <div class="sh">Registro Accessi</div>
+    <div id="access-log-con"></div>
+
+    <div class="sh">Schermata Home</div>
+    <div class="setcard" id="install-section-con"></div>
+
+    <div class="sh">Reset</div>
+    <div class="setcard">
+      <div class="setrow"><div class="setico">⚠️</div><div class="setbody"><div class="settit">Reset completo</div><div class="setsub">Cancella tutto — irreversibile</div></div><button class="iosbtn" style="background:var(--r)" onclick="doReset()">Reset</button></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- NAV -->
+<div id="nav">
+  <button class="nb active" onclick="goV('oggi',this)"><div class="ni">🎯</div><div class="nl">Oggi</div></button>
+  <button class="nb" onclick="goV('sched',this)"><div class="ni">📅</div><div class="nl">Orario</div></button>
+  <button class="nb" onclick="goV('pesodieta',this)"><div class="ni">📊</div><div class="nl">Peso+Dieta</div></button>
+  <button class="nb" onclick="goV('gym',this)"><div class="ni">🥊</div><div class="nl">Gym</div></button>
+  <button class="nb" onclick="goV('diary',this)"><div class="ni">📖</div><div class="nl">Diario</div></button>
+  <button class="nb" onclick="goV('sync',this)"><div class="ni">⚙️</div><div class="nl">Sync</div></button>
+</div>
+<div id="toast"></div>
+
+<script>
+// ══ STORAGE ══
+const P='m26_';
+const S={
+  get(k,d){try{const v=localStorage.getItem(P+k);return v!==null?JSON.parse(v):d}catch{return d}},
+  set(k,v){try{localStorage.setItem(P+k,JSON.stringify(v))}catch{}},
+  del(k){localStorage.removeItem(P+k)}
+};
+const td=()=>new Date().toISOString().split('T')[0];
+const dow=()=>new Date().getDay();
+
+// ══ ALL APPS CATALOGUE ══
+const ALL_APPS={
+  nessuna:{n:'Nessuna',ico:'🚫',url:'',store:'',sub:'Non aprire nessuna app'},
+  yazio:  {n:'Yazio',ico:'🥗',url:'market://details?id=com.yazio.android',store:'https://play.google.com/store/apps/details?id=com.yazio.android',sub:'Tracking calorie e macro'},
+  duolingo:{n:'Duolingo',ico:'🦉',url:'market://details?id=com.duolingo',store:'https://play.google.com/store/apps/details?id=com.duolingo',sub:'Inglese quotidiano'},
+  abs30:  {n:'Addominali 30 Giorni',ico:'💪',url:'market://details?id=com.popularapp.thirtydayfitnesschallenge',store:'https://play.google.com/store/apps/details?id=com.popularapp.thirtydayfitnesschallenge',sub:'Leap Fitness Group'},
+  strong: {n:'Strong',ico:'🏋️',url:'strong://',store:'https://play.google.com/store/apps/details?id=com.strongapp.android',sub:'Workout tracker avanzato'},
+  hevy:   {n:'Hevy',ico:'🔥',url:'market://details?id=com.hevyapp.android',store:'https://play.google.com/store/apps/details?id=com.hevyapp.android',sub:'Log allenamento rapido'},
+  notion: {n:'Notion',ico:'📝',url:'notion://',store:'https://play.google.com/store/apps/details?id=notion.id',sub:'Note e pianificazione'},
+  spotify:{n:'Spotify',ico:'🎵',url:'spotify://',store:'https://play.google.com/store/apps/details?id=com.spotify.music',sub:'Musica per allenarsi'},
+  cronometer:{n:'Cronometer',ico:'🔬',url:'market://details?id=com.cronometer.android.gold',store:'https://play.google.com/store/apps/details?id=com.cronometer.android.gold',sub:'Micro-nutrienti dettagliati'},
+  strava: {n:'Strava',ico:'🏃',url:'strava://',store:'https://play.google.com/store/apps/details?id=com.strava',sub:'Traccia corse e cardio'},
+};
+
+function openApp(id){
+  const a=ALL_APPS[id];if(!a||id==='nessuna')return;
+  toast(`Aprendo ${a.n}…`);
+  const el=document.createElement('a');el.href=a.url;
+  try{document.body.appendChild(el);el.click();document.body.removeChild(el)}catch{}
+  setTimeout(()=>window.open(a.store,'_blank'),1400);
+}
+
+// ══ DEFAULT APP LINKS PER MISSION ══
+const MISS_DEFAULT_APPS={
+  workout:'abs30', calories:'yazio', water:'nessuna',
+  duolingo:'duolingo', nojunk:'yazio', sleep:'notion'
+};
+
+function getMissApp(id){return S.get('miss_app_'+id,MISS_DEFAULT_APPS[id]||'nessuna')}
+function setMissApp(id,appId){S.set('miss_app_'+id,appId)}
+
+// ══ MISSIONS ══
+const MISS=[
+  {id:'workout',lbl:'Allenamento completato',sub:'Boxe · Addominali · VFI',xp:20,ico:'🥊',bg:'var(--rg)'},
+  {id:'calories',lbl:'3200 kcal raggiunte',sub:'Traccia su app alimentazione',xp:15,ico:'🍖',bg:'var(--og)'},
+  {id:'water',lbl:'3 litri d\'acqua',sub:'Bevi durante la giornata',xp:10,ico:'💧',bg:'var(--bg2)'},
+  {id:'duolingo',lbl:'Duolingo completato',sub:'15+ min inglese',xp:5,ico:'🗣️',bg:'var(--gg)'},
+  {id:'nojunk',lbl:'Nessun junk food',sub:'Alimentazione pulita',xp:10,ico:'✅',bg:'var(--gg)'},
+  {id:'sleep',lbl:'Sonno 7h30+',sub:'Telefono off 30 min prima',xp:15,ico:'😴',bg:'var(--pg)'},
+];
+const PENS=[
+  {id:'skip',lbl:'Allenamento saltato',sub:'Tocca per registrare',xp:-20,ico:'❌'},
+  {id:'late',lbl:'Dormito troppo tardi',sub:'Dopo le 23:40',xp:-10,ico:'🌙'},
+  {id:'junk',lbl:'Mangiato male',sub:'Junk o fuori piano',xp:-15,ico:'🍔'},
+];
+const LEVELS=[
+  {n:1,nm:'Recluta',min:0,max:499},
+  {n:2,nm:'Soldato',min:500,max:1199},
+  {n:3,nm:'Guerriero',min:1200,max:2499},
+  {n:4,nm:'Campione',min:2500,max:4999},
+  {n:5,nm:'Leggenda',min:5000,max:Infinity},
+];
+const getL=x=>LEVELS.find(l=>x>=l.min&&x<=l.max)||LEVELS[4];
+const getLpct=x=>{const l=getL(x);if(l.n===5)return 100;return Math.min(100,Math.round(((x-l.min)/(l.max-l.min+1))*100))};
+
+function streak(){
+  const m=S.get('missions',{});let s=0,d=new Date();d.setDate(d.getDate()-1);
+  while(s<365){const k=d.toISOString().split('T')[0];if(!Object.values(m[k]||{}).some(v=>v))break;s++;d.setDate(d.getDate()-1)}
+  if(Object.values(m[td()]||{}).some(v=>v))s++;return s;
+}
+
+function updateSB(){
+  const xp=Math.max(0,S.get('xp',0));const lv=getL(xp);const s=streak();
+  document.getElementById('sb-lv').textContent=`LV${lv.n} ${lv.nm.toUpperCase()}`;
+  document.getElementById('sb-pt').textContent=`${xp} XP`;
+  document.getElementById('xpf').style.width=getLpct(xp)+'%';
+  document.getElementById('sb-str').textContent=`🔥 ${s}`;
+}
+
+// ══ SCHEDULE ══
+const SCHED={
+  1:{n:'Lunedì',tag:'Boxe + Inglese',items:[
+    {t:'07:00',a:'Sveglia + 500ml acqua',ty:''},
+    {t:'07:15',a:'Colazione massa',ty:'food'},
+    {t:'09:00–12:30',a:'Corso inglese',ty:'inglese'},
+    {t:'13:00',a:'Pranzo',ty:'food'},
+    {t:'16:00',a:'Duolingo 15 min',ty:'inglese'},
+    {t:'17:00',a:'Snack proteico',ty:'food'},
+    {t:'18:00',a:'Stretching',ty:''},
+    {t:'19:00',a:'Cena pre-boxe (leggera)',ty:'food'},
+    {t:'20:20',a:'Preparazione palestra',ty:''},
+    {t:'21:00–22:00',a:'🥊 Boxe — Libra Team Cosenza',ty:'boxe'},
+    {t:'22:15',a:'Snack recupero',ty:'food'},
+    {t:'23:40',a:'Sonno',ty:'sleep'},
+  ]},
+  2:{n:'Martedì',tag:'Boxe + Addominali',items:[
+    {t:'07:00',a:'Sveglia',ty:''},{t:'07:15',a:'Colazione',ty:'food'},
+    {t:'09:00–12:30',a:'Corso inglese',ty:'inglese'},{t:'13:00',a:'Pranzo',ty:'food'},
+    {t:'15:30',a:'App addominali scolpiti',ty:''},{t:'16:00',a:'Stretching',ty:''},
+    {t:'17:00',a:'Snack pre-boxe',ty:'food'},
+    {t:'19:00–20:00',a:'🥊 Boxe — Libra Team Cosenza',ty:'boxe'},
+    {t:'20:30',a:'Cena grande',ty:'food'},{t:'21:30',a:'Duolingo',ty:'inglese'},{t:'23:40',a:'Sonno',ty:'sleep'},
+  ]},
+  3:{n:'Mercoledì',tag:'Corsa + Recupero',items:[
+    {t:'07:00',a:'Sveglia',ty:''},{t:'07:20',a:'Colazione',ty:'food'},
+    {t:'09:00–12:30',a:'Corso inglese',ty:'inglese'},{t:'13:00',a:'Pranzo',ty:'food'},
+    {t:'15:00',a:'Corsa / resistenza VFI',ty:''},{t:'16:00',a:'Core leggero',ty:''},
+    {t:'17:00',a:'Recupero + doccia fredda ❄️',ty:''},{t:'18:00',a:'Cena',ty:'food'},
+    {t:'21:00',a:'Duolingo',ty:'inglese'},{t:'23:40',a:'Sonno',ty:'sleep'},
+  ]},
+  4:{n:'Giovedì',tag:'Boxe + Addominali',items:[
+    {t:'07:00',a:'Sveglia',ty:''},{t:'07:15',a:'Colazione',ty:'food'},
+    {t:'09:00–12:30',a:'Corso inglese',ty:'inglese'},{t:'13:00',a:'Pranzo',ty:'food'},
+    {t:'15:30',a:'App addominali scolpiti',ty:''},{t:'17:00',a:'Snack',ty:'food'},
+    {t:'19:00–20:00',a:'🥊 Boxe — Libra Team Cosenza',ty:'boxe'},
+    {t:'20:30',a:'Cena',ty:'food'},{t:'21:15',a:'Stretching',ty:''},{t:'23:40',a:'Sonno',ty:'sleep'},
+  ]},
+  5:{n:'Venerdì',tag:'Test VFI + Forza',items:[
+    {t:'07:00',a:'Sveglia',ty:''},{t:'07:15',a:'Colazione',ty:'food'},
+    {t:'09:00–12:30',a:'Corso inglese',ty:'inglese'},{t:'13:00',a:'Pranzo',ty:'food'},
+    {t:'15:00',a:'⏱️ Test 1000m cronometro',ty:''},{t:'15:30',a:'Piegamenti + addominali max',ty:''},
+    {t:'16:30',a:'Allenamento forza superiore',ty:''},{t:'17:00',a:'Recupero',ty:''},
+    {t:'18:00',a:'Cena',ty:'food'},{t:'21:00',a:'Duolingo',ty:'inglese'},{t:'23:40',a:'Sonno',ty:'sleep'},
+  ]},
+  6:{n:'Sabato',tag:'Cardio + Recupero Attivo',items:[
+    {t:'08:00',a:'Sveglia lenta',ty:''},{t:'08:30',a:'Colazione grande',ty:'food'},
+    {t:'10:00',a:'Corsa leggera / ciclismo 30–40 min 🏃',ty:''},{t:'11:00',a:'Stretching completo',ty:''},
+    {t:'13:00',a:'Pranzo',ty:'food'},{t:'17:00',a:'Tempo libero 🎮',ty:''},
+    {t:'20:00',a:'Cena libera controllata',ty:'food'},{t:'23:40',a:'Sonno',ty:'sleep'},
+  ]},
+  0:{n:'Domenica',tag:'Recupero + Review Settimana',items:[
+    {t:'08:30',a:'Sveglia',ty:''},{t:'09:00',a:'Colazione',ty:'food'},
+    {t:'11:00',a:'Passeggiata',ty:''},{t:'13:00',a:'Pranzo',ty:'food'},
+    {t:'16:00',a:'⚖️ Peso + 📸 Foto corpo',ty:''},
+    {t:'18:00',a:'Pianificazione settimana prossima',ty:''},
+    {t:'20:00',a:'Cena',ty:'food'},{t:'23:40',a:'Sonno',ty:'sleep'},
+  ]},
+};
+
+function renderSched(){
+  const today=dow();
+  const dt=new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('sched-date').textContent=dt.charAt(0).toUpperCase()+dt.slice(1);
+  document.getElementById('sched-con').innerHTML=[1,2,3,4,5,6,0].map(d=>{
+    const day=SCHED[d];const isT=d===today;
+    return `<div class="daycard">
+      <div class="dayhdr ${isT?'op':''}" onclick="togDay(${d})" id="dh${d}">
+        <div class="dhl">${isT?'<div class="dpip"></div>':''}<div>
+          <div class="dname">${day.n}</div>
+          <div class="dtag">${isT?'▶ Oggi — '+day.tag:day.tag}</div>
+        </div></div>
+        <div class="dchev ${isT?'op':''}" id="dc${d}">›</div>
+      </div>
+      <div class="dbody ${isT?'op':''}" id="db${d}">
+        ${day.items.map(i=>`<div class="srow t${i.ty}"><div class="st">${i.t}</div><div class="sa">${i.a}</div></div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function togDay(d){
+  document.getElementById('db'+d).classList.toggle('op');
+  document.getElementById('dc'+d).classList.toggle('op');
+  document.getElementById('dh'+d).classList.toggle('op');
+}
+
+// ══ WELCOME ══
+function showWelcome(){
+  const now=new Date();
+  const days=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  const months=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+  document.getElementById('wc-date').textContent=`${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  const s=streak();const xp=Math.max(0,S.get('xp',0));
+  const ws=S.get('weights',[]);const cur=ws.length?ws[ws.length-1].weight:65;
+  document.getElementById('wc-streak').textContent=s>0?`🔥 Streak attivo: ${s} giorni consecutivi!`:'Inizia oggi il tuo streak! Puoi farcela.';
+  document.getElementById('wc-stats').innerHTML=`
+    <div class="wcs"><div class="wcs-v" style="color:var(--r)">${xp}</div><div class="wcs-l">XP</div></div>
+    <div class="wcs"><div class="wcs-v" style="color:var(--o)">${s}</div><div class="wcs-l">Streak</div></div>
+    <div class="wcs"><div class="wcs-v" style="color:var(--g)">${cur}kg</div><div class="wcs-l">Peso</div></div>`;
+}
+
+function closeWelcome(){
+  document.getElementById('wov').classList.add('gone');
+  S.set('welcomed_today',td());
+}
+
+function trackAccess(){
+  const dateStr=td();
+  const now=new Date();
+  const timeStr=now.toTimeString().slice(0,5);
+  const accesses=S.get('accesses',[]);
+  const idx=accesses.findIndex(a=>a.date===dateStr);
+  if(idx<0){
+    accesses.push({date:dateStr,firstTime:timeStr,visits:1});
+    S.set('accesses',accesses);
+    if(S.get('welcomed_today','')!==dateStr){showWelcome();}
+    else{document.getElementById('wov').classList.add('gone');}
+  } else {
+    accesses[idx].visits=(accesses[idx].visits||1)+1;
+    accesses[idx].lastTime=timeStr;
+    S.set('accesses',accesses);
+    document.getElementById('wov').classList.add('gone');
+  }
+}
+
+// ══ MIDNIGHT RESET ══
+// At 23:59 → auto-save snapshot. At 00:00 → re-render with new day.
+let _currentDay=td();
+let _midnightTimer=null;
+
+function scheduleMidnightReset(){
+  clearTimeout(_midnightTimer);
+  const now=new Date();
+  // Seconds until next 00:00:00
+  const secUntilMidnight=((23-now.getHours())*3600)+((59-now.getMinutes())*60)+(60-now.getSeconds());
+  // At 23:59 → save notification
+  const secUntil2359=secUntilMidnight-60;
+  if(secUntil2359>0){
+    setTimeout(()=>{
+      triggerEndOfDaySave();
+    },secUntil2359*1000);
+  }
+  // At 00:00 → new day
+  setTimeout(()=>{
+    newDayReset();
+  },secUntilMidnight*1000);
+}
+
+function triggerEndOfDaySave(){
+  // Auto-export snapshot to localStorage history
+  const dateStr=td();
+  const snapshot={
+    date:dateStr,
+    xp:S.get('xp',0),
+    missions:S.get('missions',{})[dateStr]||{},
+    penalties:S.get('penalties',{})[dateStr]||{},
+    note:S.get('notes',{})[dateStr]||'',
+    weight:S.get('weights',[]).slice(-1)[0]||null,
+  };
+  const history=S.get('day_history',[]);
+  const idx=history.findIndex(h=>h.date===dateStr);
+  if(idx>=0)history[idx]=snapshot;else history.push(snapshot);
+  S.set('day_history',history);
+
+  // Show saving overlay
+  const ov=document.getElementById('saving-ov');
+  ov.classList.add('show');
+  setTimeout(()=>ov.classList.remove('show'),3500);
+  toast('💾 Salvataggio automatico — fine giornata');
+}
+
+function newDayReset(){
+  // Day missions/penalties auto-reset because they're keyed by date.
+  // Just re-render everything.
+  _currentDay=td();
+  renderOggi();
+  scheduleMidnightReset();
+  // Show new day welcome
+  S.del('welcomed_today');
+  trackAccess();
+}
+
+// Also check if day changed when user opens browser again
+function checkDayChanged(){
+  const now=td();
+  if(now!==_currentDay){
+    _currentDay=now;
+    triggerEndOfDaySave();
+    newDayReset();
+  }
+}
+
+// ══ OGGI ══
+function renderOggi(){
+  const today=td();const M=S.get('missions',{});const Pn=S.get('penalties',{});
+  const tM=M[today]||{};const tP=Pn[today]||{};const xp=Math.max(0,S.get('xp',0));const s=streak();
+  let todXP=0;MISS.forEach(m=>{if(tM[m.id])todXP+=m.xp});PENS.forEach(p=>{if(tP[p.id])todXP+=p.xp});
+  const dc=MISS.filter(m=>tM[m.id]).length;
+  document.getElementById('h-xp').textContent=todXP;
+  document.getElementById('h-tot').textContent=`Totale: ${xp} XP`;
+  document.getElementById('h-str').textContent=s;
+  document.getElementById('h-ms').textContent=`${dc}/6`;
+
+  document.getElementById('miss-list').innerHTML=MISS.map(m=>{
+    const done=!!tM[m.id];
+    const linkedApp=getMissApp(m.id);
+    const app=ALL_APPS[linkedApp];
+    const appBadge=linkedApp&&linkedApp!=='nessuna'&&app
+      ?`<div class="miss-app-badge" onclick="event.stopPropagation();openApp('${linkedApp}')">${app.ico} ${app.n}</div>`:'';
+    const editBtn=`<div class="miss-app-edit" onclick="event.stopPropagation();openAppPicker('${m.id}')">✏️ app</div>`;
+    return `<div class="crow tap ${done?'done':''}" onclick="togM('${m.id}')">
+      <div class="rico" style="background:${m.bg}">${m.ico}</div>
+      <div class="rbody">
+        <div class="rtitle">${m.lbl}</div>
+        <div class="rsub">${m.sub}</div>
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0">${appBadge}${editBtn}</div>
+      </div>
+      <div class="rright"><div class="rxp">+${m.xp}</div><div class="rchk">${done?'✓':''}</div></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('pen-list').innerHTML=PENS.map(p=>{
+    const a=!!tP[p.id];
+    return `<div class="crow tap ${a?'pena':''}" onclick="togP('${p.id}')">
+      <div class="rico" style="background:rgba(255,59,48,0.11)">${p.ico}</div>
+      <div class="rbody"><div class="rtitle">${p.lbl}</div><div class="rsub">${p.sub}</div></div>
+      <div class="rright"><div class="rxp" style="color:var(--r)">${p.xp}</div><div class="rchk" style="border-color:rgba(255,59,48,.25)">${a?'✓':''}</div></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('dnote').value=S.get('notes',{})[today]||'';
+
+  // Weekend banner
+  const d=dow();const wb=document.getElementById('oggi-top-banner');
+  if(d===6||d===0){wb.innerHTML=weekendSummaryHTML();}else{wb.innerHTML='';}
+  updateSB();
+}
+
+function togM(id){
+  const t=td();const M=S.get('missions',{});if(!M[t])M[t]={};
+  const was=M[t][id];M[t][id]=!was;S.set('missions',M);
+  const m=MISS.find(x=>x.id===id);
+  S.set('xp',Math.max(0,S.get('xp',0)+(was?-m.xp:m.xp)));
+  if(!was)toast(`+${m.xp} XP — ${m.lbl}`);renderOggi();
+}
+function togP(id){
+  const t=td();const Pn=S.get('penalties',{});if(!Pn[t])Pn[t]={};
+  const was=Pn[t][id];Pn[t][id]=!was;S.set('penalties',Pn);
+  const p=PENS.find(x=>x.id===id);
+  S.set('xp',Math.max(0,S.get('xp',0)+(was?Math.abs(p.xp):p.xp)));
+  if(!was)toast(`${p.xp} XP — ${p.lbl}`);renderOggi();
+}
+function saveNote(){
+  const t=td();const n=S.get('notes',{});n[t]=document.getElementById('dnote').value;S.set('notes',n);
+}
+
+// ══ APP PICKER ══
+let _pickerMissId=null;
+
+function openAppPicker(missId){
+  _pickerMissId=missId;
+  const m=MISS.find(x=>x.id===missId);
+  document.getElementById('ap-miss-lbl').textContent=m?`Per: "${m.lbl}"`:'';
+  const current=getMissApp(missId);
+  document.getElementById('ap-options').innerHTML=Object.entries(ALL_APPS).map(([id,app])=>`
+    <div class="ap-option" onclick="selectApp('${id}')">
+      <div class="ap-opt-ico">${app.ico}</div>
+      <div class="ap-opt-body"><div class="ap-opt-name">${app.n}</div><div class="ap-opt-sub">${app.sub}</div></div>
+      <div class="ap-opt-sel ${current===id?'active':''}">${current===id?'✓':''}</div>
+    </div>`).join('');
+  document.getElementById('app-picker').classList.add('show');
+}
+
+function selectApp(appId){
+  if(_pickerMissId){setMissApp(_pickerMissId,appId);renderOggi();}
+  closeAppPicker();
+  const a=ALL_APPS[appId];
+  toast(`App collegata: ${a.ico} ${a.n}`);
+}
+
+function closeAppPicker(e){
+  if(e&&e.target.id!=='app-picker')return;
+  document.getElementById('app-picker').classList.remove('show');
+  _pickerMissId=null;
+}
+
+// ══ APP LINK MANAGER (Sync) ══
+function renderAppLinkList(){
+  const con=document.getElementById('app-link-list');if(!con)return;
+  con.innerHTML=MISS.map(m=>{
+    const linked=getMissApp(m.id);const app=ALL_APPS[linked]||ALL_APPS.nessuna;
+    return `<div class="app-link-row">
+      <div class="al-ico">${m.ico}</div>
+      <div class="al-body">
+        <div class="al-miss">${m.lbl}</div>
+        <div class="al-app">${app.ico} ${app.n}</div>
+      </div>
+      <div class="al-btn" onclick="openAppPicker('${m.id}')">Cambia</div>
+    </div>`;
+  }).join('');
+}
+
+// ══ WEEKEND SUMMARY ══
+function weekendSummaryHTML(){
+  const missions=S.get('missions',{});const now=new Date();
+  const days=[];for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);days.push(d.toISOString().split('T')[0]);}
+  const labels=['Do','Lu','Ma','Me','Gi','Ve','Sa'];
+  const xp=Math.max(0,S.get('xp',0));
+  const dotsHtml=days.map(date=>{
+    const dt=new Date(date);const dw=dt.getDay();
+    const has=Object.values(missions[date]||{}).some(v=>v);
+    return `<div class="ddot"><div class="ddot-c ${has?'active':'miss'}">${has?'✅':'·'}</div><div class="ddot-l">${labels[dw]}</div></div>`;
+  }).join('');
+  const activeDays=days.filter(d=>Object.values(missions[d]||{}).some(v=>v)).length;
+  return `<div class="diary-week-card" style="margin-bottom:10px">
+    <div class="dwc-title">📊 Resoconto Settimana</div>
+    <div class="diary-dots" style="margin-bottom:10px">${dotsHtml}</div>
+    <div class="dwc-grid">
+      <div class="dwc-stat"><div class="dwc-v" style="color:var(--g)">${activeDays}</div><div class="dwc-l">Giorni attivi</div></div>
+      <div class="dwc-stat"><div class="dwc-v" style="color:var(--o)">${xp}</div><div class="dwc-l">XP totali</div></div>
+      <div class="dwc-stat"><div class="dwc-v" style="color:var(--r)">${streak()}</div><div class="dwc-l">Streak</div></div>
+    </div>
+  </div>`;
+}
+
+// ══ DIARY ══
+function renderDiary(){
+  const notes=S.get('notes',{});
+  const missions=S.get('missions',{});
+  const penalties=S.get('penalties',{});
+  const accesses=S.get('accesses',[]);
+
+  // Build complete date list from all sources
+  const allDates=new Set([
+    ...Object.keys(notes),
+    ...Object.keys(missions),
+    ...accesses.map(a=>a.date)
+  ]);
+  const sorted=[...allDates].filter(d=>d&&d.length===10).sort().reverse();
+
+  document.getElementById('diary-dsub').textContent=`${sorted.length} giorni registrati`;
+
+  // Weekly summary at top
+  document.getElementById('diary-week-summary').innerHTML=weekendSummaryHTML();
+
+  if(!sorted.length){
+    document.getElementById('diary-entries').innerHTML=`<div class="diary-empty">
+      <div class="diary-empty-ico">📖</div>
+      <div class="diary-empty-txt">Il diario è vuoto</div>
+      <div class="diary-empty-sub">Le tue note appariranno qui ogni giorno</div>
+    </div>`;
+    return;
+  }
+
+  const dayNames=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  const colors=['var(--r)','var(--o)','var(--y)','var(--g)','var(--b)','var(--p)','var(--t)'];
+  let html='';
+
+  sorted.slice(0,60).forEach((date,idx)=>{
+    const dt=new Date(date+'T12:00:00');
+    const dw=dt.getDay();
+    const dateLabel=dt.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
+    const note=notes[date]||'';
+    const tM=missions[date]||{};
+    const tP=penalties[date]||{};
+    const doneMiss=MISS.filter(m=>tM[m.id]);
+    const donePens=PENS.filter(p=>tP[p.id]);
+    const missXP=doneMiss.reduce((s,m)=>s+m.xp,0);
+    const penXP=donePens.reduce((s,p)=>s+p.xp,0);
+    const dayXP=missXP+penXP;
+    const acc=accesses.find(a=>a.date===date);
+    const col=colors[idx%colors.length];
+    const isToday=date===td();
+
+    const missChips=MISS.map(m=>
+      `<div class="de-miss-chip ${tM[m.id]?'done':'miss'}">${m.ico} ${tM[m.id]?m.lbl.split(' ')[0]:m.lbl.split(' ')[0]}</div>`
+    ).join('');
+    const penChips=donePens.map(p=>`<div class="de-miss-chip pen">${p.ico} ${p.lbl.split(' ')[0]}</div>`).join('');
+
+    html+=`<div class="diary-entry" id="de-${date}">
+      <div class="diary-entry-hdr" onclick="togEntry('${date}')">
+        <div class="de-dot" style="background:${col}${isToday?';box-shadow:0 0 8px '+col:''}"></div>
+        <div class="de-left">
+          <div class="de-date">${isToday?'📍 Oggi — ':''} ${dateLabel}</div>
+          <div class="de-day">${dayNames[dw]}${acc?` · ${acc.visits||1} accesso${(acc.visits||1)>1?'i':''}`:''}${note?' · ✍️ nota':''}</div>
+        </div>
+        <div class="de-right">
+          ${dayXP!==0?`<div class="de-xp" style="color:${dayXP>0?'var(--g)':'var(--r)'}">${dayXP>0?'+':''}${dayXP} XP</div>`:''}
+          <div class="de-chev ${isToday?'op':''}" id="dechev-${date}">›</div>
+        </div>
+      </div>
+      <div class="diary-entry-body ${isToday?'op':''}" id="debody-${date}">
+        ${note?`<div class="de-note">${escHtml(note)}</div>`:`<div class="de-no-note">Nessuna nota scritta per questo giorno.</div>`}
+        <div class="de-miss-row">${missChips}${penChips}</div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('diary-entries').innerHTML=html||`<div class="diary-empty"><div class="diary-empty-ico">📖</div><div class="diary-empty-txt">Nessun giorno trovato</div></div>`;
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function togEntry(date){
+  const body=document.getElementById('debody-'+date);
+  const chev=document.getElementById('dechev-'+date);
+  if(!body||!chev)return;
+  body.classList.toggle('op');chev.classList.toggle('op');
+}
+
+// ══ DIET ══
+const MEALS=[
+  {kcal:3200,meals:[{n:'Colazione',ico:'🌅',kcal:700,bg:'var(--yg)',app:'yazio',f:'<strong>🥚 3 uova strapazzate</strong> · <strong>🍞 Pane di segale</strong> · <strong>🍌 Banana</strong> · <strong>🥜 Burro d\'arachidi</strong> · <strong>☕ Caffè</strong>'},{n:'Spuntino',ico:'🕙',kcal:310,bg:'var(--og)',app:'yazio',f:'<strong>🌰 Mix frutta secca</strong> 40g · <strong>🍎 Mela</strong> · <strong>🧃 Succo d\'arancia</strong>'},{n:'Pranzo',ico:'🍽️',kcal:950,bg:'var(--gg)',app:'yazio',f:'<strong>🍚 Riso basmati</strong> 150g · <strong>🍗 Pollo</strong> alla griglia 200g · <strong>🥗 Insalata</strong> con olio EVO'},{n:'Pre Workout',ico:'⚡',kcal:280,bg:'var(--rg)',app:'yazio',f:'<strong>🍌 2 banane</strong> · <strong>🍯 Miele</strong> · <strong>💧 Acqua con sali</strong>'},{n:'Cena',ico:'🌙',kcal:710,bg:'var(--pg)',app:'yazio',f:'<strong>🥔 Patate al forno</strong> · <strong>🥩 Bistecca</strong> 200g · <strong>🥦 Broccoli</strong> · <strong>🫒 EVO</strong>'},{n:'Snack Serale',ico:'🌃',kcal:250,bg:'var(--bg2)',app:'yazio',f:'<strong>🥛 Yogurt soia</strong> · <strong>🌾 Avena</strong> · <strong>🫐 Mirtilli</strong>'}]},
+  {kcal:3250,meals:[{n:'Colazione',ico:'🌅',kcal:740,bg:'var(--yg)',app:'yazio',f:'<strong>🥣 Porridge d\'avena</strong> 80g · <strong>🍌 Banana</strong> · <strong>🥜 Burro arachidi</strong> · <strong>🌰 Noci</strong>'},{n:'Spuntino',ico:'🕙',kcal:300,bg:'var(--og)',app:'yazio',f:'<strong>🥪 Panino integrale</strong> tacchino e senape · <strong>🌰 Mandorle</strong>'},{n:'Pranzo',ico:'🍽️',kcal:900,bg:'var(--gg)',app:'yazio',f:'<strong>🍝 Pasta integrale</strong> 130g · <strong>🥩 Ragù tacchino</strong> 180g · <strong>🥦 Zucchine</strong> · <strong>🫒 EVO</strong>'},{n:'Pre Boxe',ico:'🥊',kcal:250,bg:'var(--rg)',app:'yazio',f:'<strong>🍌 Banana</strong> · <strong>🍯 Miele</strong> · <strong>🌰 Frutta secca</strong>'},{n:'Cena Post-Boxe',ico:'🌙',kcal:760,bg:'var(--pg)',app:'yazio',f:'<strong>🍚 Riso</strong> 160g · <strong>🍗 Pollo al forno</strong> 220g · <strong>🥕 Carote</strong> · <strong>🫒 EVO</strong>'},{n:'Snack Serale',ico:'🌃',kcal:300,bg:'var(--bg2)',app:'yazio',f:'<strong>🥛 Yogurt soia</strong> · <strong>🍯 Miele</strong> · <strong>🫐 Frutti rossi</strong>'}]},
+  {kcal:3200,meals:[{n:'Colazione',ico:'🌅',kcal:680,bg:'var(--yg)',app:'yazio',f:'<strong>🥚 Uova al tegamino</strong> 3pz · <strong>🍞 Pane integrale</strong> · <strong>🥑 Avocado</strong> · <strong>🧃 Succo</strong>'},{n:'Spuntino',ico:'🕙',kcal:320,bg:'var(--og)',app:'yazio',f:'<strong>🌾 Gallette</strong> · <strong>🥚 Uova sode</strong> 2pz · <strong>🌰 Mandorle</strong>'},{n:'Pranzo',ico:'🍽️',kcal:900,bg:'var(--gg)',app:'yazio',f:'<strong>🥔 Gnocchi</strong> con ragù manzo · <strong>🥗 Insalata</strong> · <strong>🫒 EVO + aceto</strong>'},{n:'Pre Boxe',ico:'🥊',kcal:250,bg:'var(--rg)',app:'yazio',f:'<strong>🍌 Banana</strong> · <strong>🥜 Burro arachidi</strong>'},{n:'Cena Post-Boxe',ico:'🌙',kcal:750,bg:'var(--pg)',app:'yazio',f:'<strong>🥔 Patate dolci</strong> · <strong>🥩 Tacchino</strong> 200g · <strong>🥦 Spinaci</strong>'},{n:'Snack Serale',ico:'🌃',kcal:300,bg:'var(--bg2)',app:'yazio',f:'<strong>🌾 Avena</strong> · <strong>🍌 Banana</strong> · <strong>🥜 Burro arachidi</strong>'}]},
+  {kcal:3100,meals:[{n:'Colazione',ico:'🌅',kcal:650,bg:'var(--yg)',app:'yazio',f:'<strong>🥣 Muesli</strong> 80g con soia · <strong>🍓 Fragole</strong> · <strong>🥜 Mandorle</strong>'},{n:'Spuntino',ico:'🕙',kcal:280,bg:'var(--og)',app:'yazio',f:'<strong>🥑 Avocado</strong> su gallette · <strong>🥚 Uova sode</strong>'},{n:'Pranzo',ico:'🍽️',kcal:950,bg:'var(--gg)',app:'yazio',f:'<strong>🍚 Riso venere</strong> 140g · <strong>🍗 Pollo al limone</strong> · <strong>🥕 Verdure al forno</strong>'},{n:'Pre Corsa',ico:'🏃',kcal:200,bg:'var(--rg)',app:'yazio',f:'<strong>🍌 Banana</strong> · <strong>💧 Acqua + sali</strong>'},{n:'Cena',ico:'🌙',kcal:720,bg:'var(--pg)',app:'yazio',f:'<strong>🌮 Wrap integrale</strong> con manzo e verdure · <strong>🥔 Patate</strong>'},{n:'Snack Serale',ico:'🌃',kcal:300,bg:'var(--bg2)',app:'yazio',f:'<strong>🥛 Yogurt soia</strong> · <strong>🍯 Miele</strong> · <strong>🌰 Noci</strong>'}]},
+  {kcal:3300,meals:[{n:'Colazione',ico:'🌅',kcal:720,bg:'var(--yg)',app:'yazio',f:'<strong>🥞 Pancake d\'avena</strong> con miele · <strong>🫐 Mirtilli</strong> · <strong>🌰 Noci</strong>'},{n:'Spuntino',ico:'🕙',kcal:300,bg:'var(--og)',app:'yazio',f:'<strong>🥪 Piadina integrale</strong> con tacchino · <strong>🌰 Mandorle</strong>'},{n:'Pranzo',ico:'🍽️',kcal:1000,bg:'var(--gg)',app:'yazio',f:'<strong>🍝 Pasta</strong> 140g con pollo, funghi, zucchine · <strong>🫒 EVO</strong>'},{n:'Pre Boxe',ico:'🥊',kcal:280,bg:'var(--rg)',app:'yazio',f:'<strong>🍌 2 banane</strong> · <strong>🍯 Miele</strong>'},{n:'Cena Post-Boxe',ico:'🌙',kcal:700,bg:'var(--pg)',app:'yazio',f:'<strong>🍚 Riso</strong> 160g · <strong>🥩 Hamburger manzo</strong> · <strong>🥗 Insalata</strong>'},{n:'Snack Serale',ico:'🌃',kcal:300,bg:'var(--bg2)',app:'yazio',f:'<strong>🌾 Avena</strong> · <strong>🥜 Burro arachidi</strong> · <strong>🍌 Banana</strong>'}]},
+  {kcal:3200,meals:[{n:'Colazione',ico:'🌅',kcal:700,bg:'var(--yg)',app:'yazio',f:'<strong>🥚 Uova strapazzate</strong> 3pz · <strong>🍞 Pane farro</strong> · <strong>🍊 Arancia</strong> · <strong>🥜 Mandorle</strong>'},{n:'Spuntino',ico:'🕙',kcal:280,bg:'var(--og)',app:'yazio',f:'<strong>🌾 Gallette</strong> con hummus · <strong>🥕 Carote</strong>'},{n:'Pranzo',ico:'🍽️',kcal:950,bg:'var(--gg)',app:'yazio',f:'<strong>🥘 Risotto</strong> (no burro) con pollo e funghi · <strong>🥗 Insalata</strong>'},{n:'Pre Workout',ico:'⚡',kcal:250,bg:'var(--rg)',app:'yazio',f:'<strong>🍌 Banana</strong> · <strong>🍯 Miele</strong> · <strong>🌰 Noci</strong>'},{n:'Cena',ico:'🌙',kcal:720,bg:'var(--pg)',app:'yazio',f:'<strong>🥔 Patate bollite</strong> · <strong>🍗 Pollo arrosto</strong> · <strong>🥦 Broccoli</strong>'},{n:'Snack Serale',ico:'🌃',kcal:300,bg:'var(--bg2)',app:'yazio',f:'<strong>🥛 Yogurt soia</strong> con <strong>🫐 frutti di bosco</strong>'}]},
+  {kcal:3400,meals:[{n:'Colazione Grande',ico:'🌅',kcal:850,bg:'var(--yg)',app:'yazio',f:'<strong>🥞 Pancake</strong> 4pz con miele · <strong>🥚 Uova</strong> 2pz · <strong>🧃 Succo</strong>'},{n:'Spuntino',ico:'🕙',kcal:350,bg:'var(--og)',app:'yazio',f:'<strong>🥜 Burro arachidi</strong> su pane · <strong>🍌 Banana</strong> · <strong>🌰 Frutta secca</strong>'},{n:'Pranzo',ico:'🍽️',kcal:1000,bg:'var(--gg)',app:'yazio',f:'<strong>🥩 Bistecca</strong> 250g · <strong>🥔 Patate arrosto</strong> · <strong>🥗 Insalata grande</strong>'},{n:'Pre Cardio',ico:'🏃',kcal:200,bg:'var(--rg)',app:'yazio',f:'<strong>🍌 Banana</strong> · <strong>💧 Acqua + elettroliti</strong>'},{n:'Cena Libera',ico:'🌙',kcal:700,bg:'var(--pg)',app:'yazio',f:'🍕 <strong>Pizza</strong> (senza latticini) OPPURE <strong>🍗 Pollo e riso</strong> — goditi il pasto!'},{n:'Snack Serale',ico:'🌃',kcal:300,bg:'var(--bg2)',app:'yazio',f:'<strong>🥛 Yogurt soia</strong> · <strong>🍫 Cioccolato fondente</strong> · <strong>🌰 Noci</strong>'}]},
+];
+
+function renderDiet(){
+  const d=dow();const plan=MEALS[d];
+  const dnames=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  const todayF=new Date().toLocaleDateString('it-IT',{day:'numeric',month:'long'});
+  document.getElementById('diet-hdr').innerHTML=`<div class="dietshdr"><div><div class="dietday">${dnames[d]}</div><div class="dietsub">${todayF} · Menù del giorno</div></div><div class="dietkcal">${plan.kcal}<span style="font-size:12px;color:var(--lbl2)"> kcal</span></div></div>`;
+  document.getElementById('diet-mac').innerHTML=`<div class="mbox"><div class="mv" style="color:var(--r)">${plan.kcal}</div><div class="ml">kcal</div></div><div class="mbox"><div class="mv" style="color:var(--o)">160g</div><div class="ml">prot</div></div><div class="mbox"><div class="mv" style="color:var(--g)">${Math.round(plan.kcal/8)}g</div><div class="ml">carb</div></div>`;
+  document.getElementById('meal-list').innerHTML=plan.meals.map(m=>{
+    const linked=getMissApp('calories');const app=ALL_APPS[linked];
+    const btnLabel=linked&&linked!=='nessuna'&&app?`${app.ico} ${app.n}`:'📱 Traccia';
+    const btnClick=linked&&linked!=='nessuna'?`openApp('${linked}')`:`openAppPicker('calories')`;
+    return `<div class="mealcard"><div class="mealhdr"><div class="mico" style="background:${m.bg}">${m.ico}</div><div class="mtw"><div class="mt">${m.n}</div><div class="mk">~${m.kcal} kcal</div></div><div class="mopenb" onclick="${btnClick}">${btnLabel}</div></div><div class="mbody">${m.f}</div></div>`;
+  }).join('');
+  document.getElementById('diet-apps').innerHTML=[{id:'yazio',sub:'Traccia calorie'},{id:'cronometer',sub:'Micro-nutrienti'},{id:'abs30',sub:'Addominali'},{id:'strong',sub:'Allenamento'}].map(a=>{const ap=ALL_APPS[a.id];return `<div class="atile" onclick="openApp('${a.id}')"><div class="atico">${ap.ico}</div><div class="atnm">${ap.n}</div><div class="atsb">${a.sub}</div><div class="atbtn">Apri →</div></div>`}).join('');
+}
+
+// ══ GYM ══
+const GYM={
+  1:{type:'Resistenza + Core',color:'var(--b)',exercises:[
+    {id:'e1',n:'Corsa leggera (riscaldamento)',sets:'10 min ritmo blando',ico:'🏃'},
+    {id:'e2',n:'8 × 400m ritmo gara',sets:'Recupero 90" tra le ripetute',ico:'⚡'},
+    {id:'e3',n:'Addominali — 4 × max in 1\'',sets:'Recupero 1\' tra le serie',ico:'💪'},
+    {id:'e4',n:'🥊 Boxe — Libra Team',sets:'21:00–22:00 · Tecnica + sparring',ico:'🥊'},
+  ]},
+  2:{type:'Forza Superiore + HIIT',color:'var(--o)',exercises:[
+    {id:'e1',n:'Piegamenti — 5 × max',sets:'Pausa 2\' tra le serie',ico:'💪'},
+    {id:'e2',n:'Dips — 3 × max',sets:'Corpo libero',ico:'🔄'},
+    {id:'e3',n:'Plank — 3 × 1\'',sets:'Core stability',ico:'🧘'},
+    {id:'e4',n:'Trazioni assistite — 3 × max',sets:'Presa larga',ico:'⬆️'},
+    {id:'e5',n:'HIIT 15\' — Burpees + Mountain climber',sets:'Massima intensità',ico:'🔥'},
+    {id:'e6',n:'App Addominali 30 giorni',sets:'Sessione giornaliera',ico:'📱'},
+    {id:'e7',n:'🥊 Boxe — Libra Team',sets:'19:00–20:00',ico:'🥊'},
+  ]},
+  3:{type:'Corsa Lunga + Core',color:'var(--g)',exercises:[
+    {id:'e1',n:'Corsa 5–6 km ritmo medio',sets:'Mantieni il passo',ico:'🏃'},
+    {id:'e2',n:'Plank — 3 × 1\'',sets:'Recupero 45"',ico:'🧘'},
+    {id:'e3',n:'Side plank — 3 × 30"',sets:'Ogni lato',ico:'⬅️'},
+  ]},
+  4:{type:'Forza Gambe + Addominali',color:'var(--p)',exercises:[
+    {id:'e1',n:'Squat — 4 × 20',sets:'Controllo nel movimento',ico:'🦵'},
+    {id:'e2',n:'Affondi — 3 × 20',sets:'Alternati, passo lungo',ico:'🦵'},
+    {id:'e3',n:'Piegamenti — 3 × max',sets:'Massima qualità',ico:'💪'},
+    {id:'e4',n:'Addominali — 5 × max in 1\'',sets:'Recupero 1\'',ico:'💪'},
+    {id:'e5',n:'App Addominali 30 giorni',sets:'Sessione giornaliera',ico:'📱'},
+    {id:'e6',n:'🥊 Boxe — Libra Team',sets:'19:00–20:00',ico:'🥊'},
+  ]},
+  5:{type:'Test Simulazione VFI',color:'var(--r)',exercises:[
+    {id:'e1',n:'1000m — Cronometro',sets:'Obiettivo: ≤ 3:30 min',ico:'⏱️'},
+    {id:'e2',n:'Piegamenti max (tempo gara)',sets:'Obiettivo: ≥ 46',ico:'💪'},
+    {id:'e3',n:'Addominali max (tempo gara)',sets:'Obiettivo: ≥ 85',ico:'💪'},
+    {id:'e4',n:'Allenamento forza superiore',sets:'Circuito',ico:'🏋️'},
+    {id:'e5',n:'App Addominali 30 giorni',sets:'Sessione giornaliera',ico:'📱'},
+  ]},
+  6:{type:'Recupero Attivo',color:'var(--t)',exercises:[
+    {id:'e1',n:'Corsa leggera o ciclismo',sets:'30–40 min, ritmo blando',ico:'🏃'},
+    {id:'e2',n:'Stretching completo',sets:'Tutta la catena muscolare',ico:'🧘'},
+  ]},
+  0:{type:'Riposo Totale',color:'var(--lbl2)',exercises:[]},
+};
+
+function renderGym(){
+  const d=dow();
+  const dayNames=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  const routine=GYM[d];const today=td();const gymState=S.get('gym_'+today,{});
+  let hdrHtml='';
+  if(d===0){
+    hdrHtml=`<div class="gym-rest-card"><div class="gym-rest-ico">😴</div><div class="gym-rest-title">Riposo — Domenica</div><div class="gym-rest-sub">Recupero completo. Domani si torna più forti.</div></div>`;
+  } else {
+    const total=routine.exercises.length;const done=routine.exercises.filter(e=>gymState[e.id]).length;
+    const pct=total?Math.round((done/total)*100):0;
+    hdrHtml=`<div class="gym-day-hdr"><div class="gym-type" style="color:${routine.color}">${routine.type}</div><div class="gym-dayname">${dayNames[d]}</div><div class="gym-prog"><div class="gym-prog-bar"><div class="gym-prog-fill" style="width:${pct}%"></div></div><div class="gym-prog-lbl" style="color:${routine.color}">${done}/${total}</div></div></div>`;
+  }
+  document.getElementById('gym-day-hdr-con').innerHTML=hdrHtml;
+  let exHtml='';
+  if(d!==0&&routine.exercises.length){
+    const vfi=routine.exercises.filter(e=>e.ico!=='🥊');const boxe=routine.exercises.filter(e=>e.ico==='🥊');
+    const grp=(exs,title,col)=>{if(!exs.length)return '';return `<div class="excard"><div class="ex-hdr" style="background:rgba(255,255,255,0.04)"><div class="ex-hdr-title" style="color:${col}">${title}</div></div>${exs.map(e=>`<div class="ex-row ${gymState[e.id]?'done':''}" onclick="togEx('${e.id}')"><div class="ex-chk">${gymState[e.id]?'✓':''}</div><div class="ex-body"><div class="ex-name">${e.n}</div><div class="ex-sets">${e.sets}</div></div><div class="ex-ico">${e.ico}</div></div>`).join('')}</div>`};
+    exHtml+=grp(vfi,'🗂️ Routine VFI + Piano','var(--b)');
+    exHtml+=grp(boxe,'🥊 Boxe','var(--r)');
+  }
+  document.getElementById('gym-exercise-list').innerHTML=exHtml;
+}
+
+function togEx(id){
+  const today=td();const key='gym_'+today;
+  const state=S.get(key,{});state[id]=!state[id];S.set(key,state);
+  if(state[id])toast('✅ Esercizio completato!');renderGym();
+}
+
+// ══ PROGRESS ══
+function renderProg(){
+  const ws=S.get('weights',[]);const xp=Math.max(0,S.get('xp',0));
+  const cur=ws.length?ws[ws.length-1].weight:65;
+  document.getElementById('pw-b').style.width=Math.min(100,Math.max(0,((cur-65)/(80-65))*100))+'%';
+  document.getElementById('pw-txt').textContent=`${cur}→80kg`;
+  const st=new Date('2026-05-15'),en=new Date('2026-08-01'),now=new Date();
+  const el=Math.max(0,Math.floor((now-st)/86400000));const tot=Math.floor((en-st)/86400000);
+  document.getElementById('pt-b').style.width=Math.min(100,Math.round((el/tot)*100))+'%';
+  document.getElementById('pt-txt').textContent=`${el}/${tot} gg`;
+  document.getElementById('px-b').style.width=Math.min(100,Math.round((xp/5000)*100))+'%';
+  document.getElementById('px-txt').textContent=`${xp}/5000`;
+  const meas=S.get('measurements',{});
+  document.getElementById('measg').innerHTML=[{id:'chest',l:'Petto'},{id:'arms',l:'Braccia'},{id:'waist',l:'Vita'},{id:'legs',l:'Gambe'}].map(m=>`<div class="mrow"><div class="mlbl">${m.l}</div><input class="minp" id="meas-${m.id}" type="number" step="0.5" value="${meas[m.id]||''}" placeholder="—"><div class="munit">cm</div></div>`).join('');
+  const wl=document.getElementById('wlog');
+  if(!ws.length){wl.innerHTML='<div class="wlrow"><span class="wldate">Nessuna pesata</span><span></span></div>'}
+  else{wl.innerHTML=[...ws].reverse().slice(0,14).map(w=>`<div class="wlrow"><span class="wldate">${w.date}</span><span class="wlval" style="color:var(--o)">${w.weight} kg</span></div>`).join('')}
+  drawChart(ws);
+}
+function saveMeas(){const meas={};[{id:'chest'},{id:'arms'},{id:'waist'},{id:'legs'}].forEach(m=>{const el=document.getElementById('meas-'+m.id);if(el&&el.value)meas[m.id]=parseFloat(el.value)});S.set('measurements',meas);toast('Misure salvate ✅')}
+function logW(){
+  const i=document.getElementById('winp');const v=parseFloat(i.value);
+  if(isNaN(v)||v<30||v>200){toast('Peso non valido ❌');return}
+  const ws=S.get('weights',[]);const t=td();
+  const idx=ws.findIndex(w=>w.date===t);if(idx>=0)ws[idx].weight=v;else ws.push({date:t,weight:v});
+  S.set('weights',ws);i.value='';toast(`✅ ${v} kg salvato!`);renderProg();
+}
+
+// ══ CHART ══
+function drawChart(ws){
+  const c=document.getElementById('wChart');if(!c)return;
+  const dpr=window.devicePixelRatio||1;const W=c.offsetWidth||370;const H=150;
+  c.width=W*dpr;c.height=H*dpr;const ctx=c.getContext('2d');ctx.scale(dpr,dpr);ctx.clearRect(0,0,W,H);
+  if(ws.length<2){ctx.fillStyle='rgba(255,255,255,0.18)';ctx.font='500 13px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText('Aggiungi 2+ pesate per il grafico',W/2,H/2);return}
+  const data=ws.slice(-30);const vals=data.map(d=>d.weight);
+  const lo=Math.min(...vals,63)-1.5;const hi=Math.max(...vals,66)+1.5;
+  const pL=40,pR=12,pT=16,pB=26;const cW=W-pL-pR;const cH=H-pT-pB;
+  const tx=i=>pL+(i/(data.length-1))*cW;const ty=v=>pT+cH-((v-lo)/(hi-lo))*cH;
+  for(let i=0;i<=4;i++){const y=pT+(cH/4)*i;const val=hi-((hi-lo)/4)*i;ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(W-pR,y);ctx.stroke();ctx.fillStyle='rgba(255,255,255,0.25)';ctx.font='500 9px -apple-system,sans-serif';ctx.textAlign='right';ctx.fillText(val.toFixed(1),pL-4,y+3)}
+  const t80=ty(80);if(t80>=pT&&t80<=pT+cH){ctx.strokeStyle='rgba(255,149,0,0.35)';ctx.setLineDash([4,5]);ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pL,t80);ctx.lineTo(W-pR,t80);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(255,149,0,0.6)';ctx.font='600 9px -apple-system,sans-serif';ctx.textAlign='right';ctx.fillText('80kg',W-pR-2,t80-4)}
+  const gr=ctx.createLinearGradient(0,pT,0,pT+cH);gr.addColorStop(0,'rgba(255,59,48,0.3)');gr.addColorStop(1,'rgba(255,59,48,0)');ctx.fillStyle=gr;ctx.beginPath();ctx.moveTo(tx(0),pT+cH);data.forEach((d,i)=>ctx.lineTo(tx(i),ty(d.weight)));ctx.lineTo(tx(data.length-1),pT+cH);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='#FF3B30';ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.lineCap='round';ctx.beginPath();data.forEach((d,i)=>i===0?ctx.moveTo(tx(i),ty(d.weight)):ctx.lineTo(tx(i),ty(d.weight)));ctx.stroke();
+  data.forEach((d,i)=>{const last=i===data.length-1;if(last){ctx.fillStyle='rgba(255,149,0,0.2)';ctx.beginPath();ctx.arc(tx(i),ty(d.weight),10,0,Math.PI*2);ctx.fill()}ctx.fillStyle=last?'#FF9500':'rgba(255,59,48,0.9)';ctx.beginPath();ctx.arc(tx(i),ty(d.weight),last?5.5:3,0,Math.PI*2);ctx.fill()});
+  ctx.fillStyle='rgba(255,255,255,0.25)';ctx.font='500 9px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(data[0].date.slice(5),pL,H-7);ctx.textAlign='right';ctx.fillText(data[data.length-1].date.slice(5),W-pR,H-7);
+}
+
+// ══ SYNC ══
+function renderSync(){
+  document.getElementById('ip-inp').value=S.get('home_ip','192.168.1.1');
+  document.getElementById('cfg-xp').textContent=S.get('xp',0);
+  document.getElementById('cfg-str').textContent=streak();
+  const notes=S.get('notes',{});
+  document.getElementById('cfg-diary').textContent=Object.keys(notes).filter(k=>notes[k]).length;
+  const accesses=S.get('accesses',[]);
+  const totalVisits=accesses.reduce((s,a)=>s+(a.visits||1),0);
+  document.getElementById('cfg-acc').textContent=totalVisits;
+  document.getElementById('le-lbl').textContent=S.get('last_export',null)||'—';
+  renderAppLinkList();
+  renderAccessLog();
+  renderInstallSection();
+}
+
+function renderAccessLog(){
+  const con=document.getElementById('access-log-con');if(!con)return;
+  const accesses=S.get('accesses',[]);
+  if(!accesses.length){
+    con.innerHTML='<div class="access-card"><div style="padding:16px;font-size:13px;color:var(--lbl2);text-align:center">Nessun accesso registrato ancora.</div></div>';
+    return;
+  }
+  const dayNames=['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+  const acColors=['var(--r)','var(--o)','var(--y)','var(--g)','var(--b)','var(--p)','var(--t)'];
+  const sorted=[...accesses].reverse().slice(0,30);
+  const totalVisits=accesses.reduce((s,a)=>s+(a.visits||1),0);
+  const html=`<div class="access-card">
+    <div class="access-hdr">
+      <div class="access-title">Registro accessi</div>
+      <div class="access-count">${totalVisits} accessi totali</div>
+    </div>
+    ${sorted.map((a,i)=>{
+      const dt=new Date(a.date+'T12:00:00');
+      const dw=dt.getDay();
+      const col=acColors[i%acColors.length];
+      const dateF=dt.toLocaleDateString('it-IT',{day:'numeric',month:'short',year:'numeric'});
+      const isToday=a.date===td();
+      const timeInfo=[a.firstTime?'Primo: '+a.firstTime:null,a.lastTime?'Ultimo: '+a.lastTime:null].filter(Boolean).join(' · ');
+      return `<div class="access-row">
+        <div class="arow-left">
+          <div class="arow-dot" style="background:${col}${isToday?';box-shadow:0 0 6px '+col:''}"></div>
+          <div class="arow-info">
+            <div class="arow-day">${isToday?'📍 Oggi — ':''}${dayNames[dw]} ${dateF}</div>
+            <div class="arow-time">${timeInfo||'—'}</div>
+          </div>
+        </div>
+        <div class="arow-visits">
+          <div class="arow-v" style="color:${col}">${a.visits||1}</div>
+          <div class="arow-badge">accesso${(a.visits||1)>1?'i':''}</div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+  con.innerHTML=html;
+}
+function saveIP(){const ip=document.getElementById('ip-inp').value.trim();if(!ip){toast('IP non valido ❌');return}S.set('home_ip',ip);toast(`Router salvato: ${ip}`);doWifi()}
+
+// ══ WIFI ══
+async function doWifi(){
+  const ip=S.get('home_ip','192.168.1.1');setW('chk');
+  const ok=await probeR(ip);setW(ok?'home':'away');
+  const msg=document.getElementById('sync-msg');const sub=document.getElementById('sync-sub');const sdot=document.getElementById('sync-dot');
+  if(sdot)sdot.className='syncdot '+(ok?'home':'away');
+  if(msg){msg.textContent=ok?`✅ Rete domestica rilevata`:'❌ Non in rete di casa';msg.style.color=ok?'var(--g)':'var(--lbl2)';if(sub)sub.textContent=ok?`${ip} — sync disponibile`:'Connettiti alla rete di casa';if(ok&&S.get('last_export','')!==td())setTimeout(()=>toast('📶 Sei a casa — fai backup!'),700)}
+  return ok;
+}
+async function probeR(ip){
+  const img=await new Promise(r=>{const i=new Image();let d=0;const f=v=>{if(!d){d=1;r(v)}};const t=setTimeout(()=>{i.src='';f(false)},2200);i.onerror=()=>{clearTimeout(t);f(true)};i.onload=()=>{clearTimeout(t);f(true)};i.src=`http://${ip}/favicon.ico?_=${Date.now()}`});
+  if(img)return true;
+  try{const c=new AbortController();const t=setTimeout(()=>c.abort(),2200);await fetch(`http://${ip}`,{signal:c.signal,mode:'no-cors',cache:'no-store'});clearTimeout(t);return true}catch(e){return e.name!=='AbortError'}
+}
+function setW(state){
+  const led=document.getElementById('wled');const txt=document.getElementById('wtxt');
+  if(state==='home'){led.className='wled home';txt.textContent='Casa';txt.style.color='var(--g)'}
+  else if(state==='chk'){led.className='wled chk';txt.textContent='…';txt.style.color='var(--o)'}
+  else{led.className='wled';txt.textContent='WiFi';txt.style.color=''}
+}
+
+// ══ EXPORT / IMPORT ══
+function doExport(){
+  const pl={app:'missione-agosto-2026',v:'4.0',exported:new Date().toISOString(),
+    xp:S.get('xp',0),missions:S.get('missions',{}),penalties:S.get('penalties',{}),
+    weights:S.get('weights',[]),notes:S.get('notes',{}),measurements:S.get('measurements',{}),
+    accesses:S.get('accesses',[]),day_history:S.get('day_history',[])};
+  const blob=new Blob([JSON.stringify(pl,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download=`missione-agosto-${td()}.json`;a.click();URL.revokeObjectURL(url);
+  S.set('last_export',td());const lel=document.getElementById('le-lbl');if(lel)lel.textContent=td();
+  toast('✅ Backup esportato!');
+}
+function doImport(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.app!=='missione-agosto-2026'){toast('File non compatibile ❌');return}
+  ['xp','missions','penalties','weights','notes','measurements','accesses','day_history'].forEach(k=>{if(d[k]!==undefined)S.set(k,d[k])});
+  toast('✅ Dati importati!');renderOggi();renderSync()}catch{toast('Errore file ❌')}};
+  reader.readAsText(file);e.target.value='';
+}
+function doReset(){
+  if(!confirm('ATTENZIONE: tutti i dati cancellati definitivamente. Continuare?'))return;
+  ['xp','missions','penalties','weights','notes','measurements','home_ip','last_export','accesses','welcomed_today','day_history'].forEach(k=>S.del(k));
+  MISS.forEach(m=>S.del('miss_app_'+m.id));
+  toast('Reset completato');renderOggi();renderSync();updateSB();
+}
+
+// ══ NAV ══
+function goV(name,btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('v-'+name).classList.add('active');btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'instant'});
+  if(name==='sched')renderSched();
+  if(name==='pesodieta'){renderProg();renderDiet();}
+  if(name==='gym')renderGym();
+  if(name==='diary')renderDiary();
+  if(name==='sync')renderSync();
+}
+
+// ══ TOAST ══
+let _tt;
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2700)}
+
+
+// ══ PWA — INSTALL GUIDE (funziona su file:// locale) ══
+(function setupPWA(){
+  // Genera icona canvas
+  function buildIcon(size){
+    const c=document.createElement('canvas');c.width=size;c.height=size;
+    const ctx=c.getContext('2d');
+    const g=ctx.createLinearGradient(0,0,size,size);
+    g.addColorStop(0,'#FF3B30');g.addColorStop(1,'#FF9500');
+    const r=size*0.2;
+    ctx.beginPath();
+    ctx.moveTo(r,0);ctx.lineTo(size-r,0);ctx.quadraticCurveTo(size,0,size,r);
+    ctx.lineTo(size,size-r);ctx.quadraticCurveTo(size,size,size-r,size);
+    ctx.lineTo(r,size);ctx.quadraticCurveTo(0,size,0,size-r);
+    ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);ctx.closePath();
+    ctx.fillStyle=g;ctx.fill();
+    ctx.font=`bold ${size*0.52}px sans-serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('💪',size/2,size/2+size*0.03);
+    return c.toDataURL('image/png');
+  }
+
+  // Manifest come data URI (funziona senza server)
+  const icon192=buildIcon(192);
+  const icon512=buildIcon(512);
+  const manifest={
+    name:'Missione Agosto — Negus',
+    short_name:'Missione',
+    description:'Fitness tracker personale di Negus',
+    start_url:'./',
+    display:'standalone',
+    background_color:'#000000',
+    theme_color:'#000000',
+    orientation:'portrait-primary',
+    icons:[
+      {src:icon192,sizes:'192x192',type:'image/png',purpose:'any maskable'},
+      {src:icon512,sizes:'512x512',type:'image/png',purpose:'any maskable'}
+    ]
+  };
+  const mUrl='data:application/manifest+json,'+encodeURIComponent(JSON.stringify(manifest));
+  const mLink=document.getElementById('pwa-manifest');
+  if(mLink)mLink.href=mUrl;
+
+  // Apple touch icon
+  const aLink=document.getElementById('apple-icon');
+  if(aLink)aLink.href=buildIcon(180);
+})();
+
+// ── Rilevamento piattaforma ──
+const _isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+const _isAndroid=/android/i.test(navigator.userAgent);
+const _isStandalone=window.matchMedia('(display-mode: standalone)').matches||!!window.navigator.standalone;
+const _isChrome=/chrome/i.test(navigator.userAgent)&&!/edge|opr|brave/i.test(navigator.userAgent);
+let _deferredPrompt=null;
+
+// ── Banner install ──
+function _showBanner(){
+  if(_isStandalone)return;
+  if(S.get('install_dismissed','no')==='yes')return;
+  setTimeout(()=>{
+    const b=document.getElementById('install-banner');
+    if(b)b.classList.add('show');
+  },3500);
+}
+
+// Evento nativo Android Chrome (funziona solo su HTTPS — su file:// non scatta)
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  _deferredPrompt=e;
+  _showBanner();
+});
+window.addEventListener('appinstalled',()=>{
+  _deferredPrompt=null;
+  const b=document.getElementById('install-banner');
+  if(b)b.classList.remove('show');
+  toast('✅ Missione installata sulla Home!');
+  S.set('install_dismissed','yes');
+});
+
+// Su file:// mostra sempre il banner (guida manuale)
+if(!_isStandalone){
+  _showBanner();
+}
+
+function triggerInstall(){
+  if(_deferredPrompt){
+    // Chrome su HTTPS — prompt nativo
+    _deferredPrompt.prompt();
+    _deferredPrompt.userChoice.then(r=>{
+      if(r.outcome==='accepted'){toast('✅ Installazione avviata!');S.set('install_dismissed','yes');}
+      _deferredPrompt=null;
+      document.getElementById('install-banner').classList.remove('show');
+    });
+  } else if(_isAndroid){
+    document.getElementById('install-banner').classList.remove('show');
+    document.getElementById('android-sheet').classList.add('show');
+  } else if(_isIOS){
+    document.getElementById('install-banner').classList.remove('show');
+    document.getElementById('ios-sheet').classList.add('show');
+  } else {
+    // Desktop
+    document.getElementById('install-banner').classList.remove('show');
+    document.getElementById('android-sheet').classList.add('show');
+  }
+}
+
+function dismissInstall(){
+  document.getElementById('install-banner').classList.remove('show');
+  S.set('install_dismissed','yes');
+}
+
+function openInstallGuide(){
+  if(_isIOS){
+    document.getElementById('ios-sheet').classList.add('show');
+  } else {
+    document.getElementById('android-sheet').classList.add('show');
+  }
+}
+
+function closeIosSheet(e){
+  if(e&&e.target.id!=='ios-sheet')return;
+  document.getElementById('ios-sheet').classList.remove('show');
+}
+function closeAndroidSheet(e){
+  if(e&&e.target.id!=='android-sheet')return;
+  document.getElementById('android-sheet').classList.remove('show');
+}
+
+function renderInstallSection(){
+  const con=document.getElementById('install-section-con');if(!con)return;
+  if(_isStandalone){
+    con.innerHTML='<div class="setrow"><div class="setico">✅</div><div class="setbody"><div class="settit">App già installata</div><div class="setsub">Stai usando la versione standalone</div></div></div>';
+    return;
+  }
+  const platform=_isIOS?'Safari iOS':'Chrome Android';
+  con.innerHTML=`
+    <div class="setrow">
+      <div class="setico">📲</div>
+      <div class="setbody">
+        <div class="settit">Aggiungi alla schermata Home</div>
+        <div class="setsub">Guida passo-passo per ${platform}</div>
+      </div>
+      <button class="iosbtn" onclick="openInstallGuide()">Guida</button>
+    </div>`;
+}
+
+
+// ══ VISIBILITY CHANGE (check day when user reopens tab) ══
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDayChanged()});
+window.addEventListener('focus',checkDayChanged);
+
+// ══ INIT ══
+(function init(){
+  _currentDay=td();
+  trackAccess();
+  renderOggi();
+  scheduleMidnightReset();
+  // Minute-by-minute day check
+  setInterval(checkDayChanged,60000);
+  // WiFi
+  setTimeout(async()=>{const ok=await doWifi();if(ok&&S.get('last_export','')!==td())setTimeout(()=>toast('📶 Sei a casa — fai backup!'),700)},1200);
+  setInterval(doWifi,60000);
+})();
+</script>
+</body>
+</html>
